@@ -44,7 +44,11 @@ internal class NewsHttpClient : NetworkDataSource {
     }
 
     override suspend fun getHeadlines(country: String): HeadlinesResponse {
-        return httpClient.get("top-headlines").body()
+        return httpClient.get("top-headlines") {
+            url {
+                parameters.append("country", country)
+            }
+        }.body()
     }
 
 }

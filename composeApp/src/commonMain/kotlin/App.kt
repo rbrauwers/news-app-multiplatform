@@ -1,58 +1,51 @@
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import com.rbrauwers.newsapp.network.NetworkDataSource
-import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.painterResource
-import org.koin.compose.koinInject
+import cafe.adriel.voyager.navigator.tab.CurrentTab
+import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
+import cafe.adriel.voyager.navigator.tab.Tab
+import cafe.adriel.voyager.navigator.tab.TabNavigator
+import com.rbrauwers.newsapp.designsystem.theme.NewsAppTheme
+import com.rbrauwers.newsapp.headlines.HeadlineTab
+import com.rbrauwers.newsapp.sources.SourceTab
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun App() {
-    MaterialTheme {
-        var greetingText by remember { mutableStateOf("Hello World!") }
-        var showImage by remember { mutableStateOf(false) }
-        val coroutineScope = rememberCoroutineScope()
-        val networkDataSource = koinInject<NetworkDataSource>()
-
-        Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-            Button(onClick = {
-                greetingText = "Compose: ${Greeting().greet()}"
-                showImage = !showImage
-
-                coroutineScope.launch {
-                    runCatching {
-                        networkDataSource.getSources()
-                    }.onSuccess {
-                        println("success")
-                    }
-                    .onFailure {
-                        println("error $it")
+    NewsAppTheme {
+        TabNavigator(HeadlineTab) {
+            Scaffold(
+                content = {
+                    CurrentTab()
+                },
+                bottomBar = {
+                    NavigationBar {
+                        TabNavigationItem(HeadlineTab)
+                        TabNavigationItem(SourceTab)
                     }
                 }
-            }) {
-                Text(greetingText)
-            }
-
-            AnimatedVisibility(showImage) {
-                Image(
-                    painterResource("compose-multiplatform.xml"),
-                    null
-                )
-            }
+            )
         }
     }
+}
+
+@Composable
+private fun RowScope.TabNavigationItem(tab: Tab) {
+    val tabNavigator = LocalTabNavigator.current
+
+    NavigationBarItem(
+        selected = tabNavigator.current.key == tab.key,
+        onClick = { tabNavigator.current = tab },
+        icon = {
+            tab.options.icon?.apply {
+                Icon(painter = this, contentDescription = tab.options.title)
+            }
+        },
+        label = {
+            Text(text = tab.options.title)
+        }
+    )
 }
