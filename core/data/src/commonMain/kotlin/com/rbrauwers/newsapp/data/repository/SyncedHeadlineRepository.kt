@@ -2,18 +2,18 @@ package com.rbrauwers.newsapp.data.repository
 
 import com.rbrauwers.newsapp.model.Article
 import com.rbrauwers.newsapp.network.NetworkDataSource
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class SyncedHeadlineRepository(
     private val networkDataSource: NetworkDataSource
 ) : HeadlineRepository {
 
-    private val channel = Channel<List<Article>>()
-    private val headlineFlow = channel.receiveAsFlow()
+    private val _headlineFlow = MutableStateFlow<List<Article>?>(null)
+    private val headlineFlow = _headlineFlow.asStateFlow()
 
-    override fun getHeadlines(): Flow<List<Article>> {
+    override fun getHeadlines(): Flow<List<Article>?> {
         return headlineFlow
     }
 
@@ -21,7 +21,7 @@ class SyncedHeadlineRepository(
         runCatching {
             networkDataSource.getHeadlines()
         }.onSuccess {
-            channel.send(it.articles)
+            _headlineFlow.emit(it.articles)
         }.onFailure {
             println("SyncedHeadlineRepository::sync failure $it")
         }
