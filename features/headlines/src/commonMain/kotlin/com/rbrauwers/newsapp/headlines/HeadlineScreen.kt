@@ -47,7 +47,6 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.rbrauwers.newsapp.designsystem.NewsAppDefaultProgressIndicator
-import com.rbrauwers.newsapp.designsystem.newsAppDefaultProgressIndicatorItem
 import com.rbrauwers.newsapp.resources.MultiplatformResources
 import dev.icerock.moko.resources.compose.stringResource
 import io.kamel.image.KamelImage
@@ -60,7 +59,6 @@ object HeadlineTab : Tab {
         @Composable
         get() {
             val title = stringResource(MultiplatformResources.strings.headlines)
-            //val title = ""
             val icon = rememberVectorPainter(Icons.Filled.List)
 
             return remember {
