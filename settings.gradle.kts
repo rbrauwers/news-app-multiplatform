@@ -5,8 +5,8 @@ pluginManagement {
     repositories {
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
         google()
-        gradlePluginPortal()
         mavenCentral()
+        gradlePluginPortal()
     }
 }
 
@@ -21,3 +21,9 @@ dependencyResolutionManagement {
 include(":composeApp")
 include(":core:network")
 include(":core:model")
+include(":features:headlines")
+include(":core:data")
+include(":core:common")
+include(":features:sources")
+include(":core:designsystem")
+include(":resources")

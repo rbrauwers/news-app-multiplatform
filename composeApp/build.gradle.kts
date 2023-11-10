@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
+    id("dev.icerock.mobile.multiplatform-resources")
 }
 
 kotlin {
@@ -28,15 +29,20 @@ kotlin {
     
     sourceSets {
         androidMain.dependencies {
-            implementation(libs.compose.ui)
-            implementation(libs.compose.ui.tooling.preview)
+            val composeBom = dependencies.platform(libs.androidx.compose.bom)
+            implementation(composeBom)
+            implementation(libs.androidx.compose.ui)
+            implementation(libs.androidx.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
+
+            implementation(dependencies.platform(libs.koin.bom))
+            implementation(libs.koin.android)
         }
 
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
-            implementation(compose.material)
+            implementation(compose.material3)
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
 
@@ -44,8 +50,16 @@ kotlin {
             implementation(libs.koin.compose)
             implementation(libs.koin.core)
 
+            implementation(libs.voyager.tab.navigator)
+
+            implementation(libs.icerock.moko.resources)
+            implementation(libs.icerock.moko.resources.compose)
+
+            implementation(project(":core:designsystem"))
             implementation(project(":core:model"))
             implementation(project(":core:network"))
+            implementation(project(":features:headlines"))
+            implementation(project(":features:sources"))
         }
     }
 }
@@ -65,28 +79,38 @@ android {
         versionCode = 1
         versionName = "1.0"
     }
+
     buildFeatures {
         compose = true
     }
+
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
     dependencies {
-        debugImplementation(libs.compose.ui.tooling)
+        debugImplementation(libs.androidx.compose.ui.tooling)
+    }
+
+    sourceSets {
+        getByName("main").java.srcDirs("build/generated/moko/androidMain/src")
     }
 }
 

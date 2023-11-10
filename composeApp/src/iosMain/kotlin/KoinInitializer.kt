@@ -1,9 +1,9 @@
-import com.rbrauwers.newsapp.network.di.networkModule
+import di.appModule
 import org.koin.core.context.startKoin
 
 @Suppress("unused")
 fun initKoin() {
     startKoin {
-        modules(networkModule)
+        modules(appModule)
     }
 }
