@@ -10,6 +10,7 @@ import com.rbrauwers.newsapp.model.Article
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -35,6 +36,7 @@ internal class HeadlineScreenModel(
     private fun produceHeadlineUiState(): Flow<HeadlineUiState> {
         return headlineRepository
             .getHeadlines()
+            .filterNotNull()
             .asResult()
             .map { it.toHeadlineUiState() }
     }
