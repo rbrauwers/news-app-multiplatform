@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
+import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getNavigatorScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -56,6 +57,14 @@ object SourceTab : Tab {
             }
         }
 
+    @Composable
+    override fun Content() {
+        SourcesScreen().Content()
+    }
+}
+
+private class SourcesScreen: Screen {
+
     @OptIn(ExperimentalVoyagerApi::class)
     @Composable
     override fun Content() {
@@ -65,6 +74,7 @@ object SourceTab : Tab {
         val uiState: SourceUiState by screenModel.sourceUiState.collectAsState()
         SourcesScreenContent(uiState = uiState)
     }
+
 }
 
 @Composable
