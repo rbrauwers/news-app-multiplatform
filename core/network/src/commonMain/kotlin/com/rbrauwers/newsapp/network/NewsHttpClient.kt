@@ -35,7 +35,7 @@ internal class NewsHttpClient : NetworkDataSource {
 
         defaultRequest {
             url("https://newsapi.org/v2/")
-            headers.appendIfNameAbsent("X-Api-Key", "7b3a48cc5cc24801bdd280dde215dcd0")
+            headers.appendIfNameAbsent("X-Api-Key", BuildKonfig.NEWS_API_KEY)
         }
     }
 
