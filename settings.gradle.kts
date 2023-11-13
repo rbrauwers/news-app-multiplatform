@@ -19,6 +19,7 @@ dependencyResolutionManagement {
 }
 
 include(":composeApp")
+include(":core:database")
 include(":core:network")
 include(":core:model")
 include(":features:headlines")

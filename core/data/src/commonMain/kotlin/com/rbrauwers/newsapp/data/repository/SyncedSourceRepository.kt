@@ -1,27 +1,31 @@
 package com.rbrauwers.newsapp.data.repository
 
+import com.rbrauwers.newsapp.common.isOk
+import com.rbrauwers.newsapp.data.model.toEntity
+import com.rbrauwers.newsapp.database.dao.SourceDao
+import com.rbrauwers.newsapp.database.model.toExternalModel
 import com.rbrauwers.newsapp.model.NewsSource
 import com.rbrauwers.newsapp.network.NetworkDataSource
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 
 class SyncedSourceRepository(
-    private val networkDataSource: NetworkDataSource
+    private val networkDataSource: NetworkDataSource,
+    private val dao: SourceDao
 ) : SourceRepository {
 
-    private val _sourceFlow = MutableStateFlow<List<NewsSource>?>(null)
-    private val sourceFlow = _sourceFlow.asStateFlow()
-
     override fun getSources(): Flow<List<NewsSource>?> {
-        return sourceFlow
+        return dao.getSources().map { it.map { source -> source.toExternalModel() } }
     }
 
     override suspend fun sync() {
         runCatching {
-            networkDataSource.getSources()
+            val response = networkDataSource.getSources()
+
+            if (response.status.isOk()) {
+                dao.upsertSources(response.sources.map { it.toEntity() })
+            }
         }.onSuccess {
-            _sourceFlow.emit(it.sources)
         }.onFailure {
             println("SyncedSourceRepository::sync failure $it")
         }

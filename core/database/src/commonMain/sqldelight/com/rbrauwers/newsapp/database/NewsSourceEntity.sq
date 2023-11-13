@@ -1,0 +1,26 @@
+CREATE TABLE NewsSourceEntity (
+    id TEXT PRIMARY KEY NOT NULL,
+    name TEXT,
+    description TEXT,
+    url TEXT,
+    category TEXT,
+    language TEXT,
+    country TEXT
+);
+
+selectAll:
+SELECT * FROM NewsSourceEntity;
+
+upsert {
+  UPDATE  NewsSourceEntity
+  SET name = :name,
+      description = :description,
+      url = :url,
+      category = :category,
+      language = :language,
+      country = :country
+  WHERE id = :id;
+
+  INSERT OR IGNORE INTO NewsSourceEntity (id, name, description, url, category, language, country)
+  VALUES (:id, :name, :description, :url, :category, :language, :country);
+}

@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
-    //kotlin("jvm") version libs.versions.kotlin
 }
 
 @OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
@@ -33,6 +32,7 @@ kotlin {
                 implementation(libs.koin.core)
                 implementation(libs.kotlin.coroutines.core)
                 implementation(project(":core:common"))
+                implementation(project(":core:database"))
                 implementation(project(":core:network"))
                 implementation(project(":core:model"))
             }

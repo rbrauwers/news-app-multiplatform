@@ -27,6 +27,7 @@ kotlinx-serialization-json = "1.5.1"
 ktor = "2.3.6"
 logback = "1.4.11"
 napier = "2.6.1"
+sql-delight = "2.0.0"
 voyager = "1.0.0-rc10"
 
 [libraries]
@@ -64,6 +65,10 @@ ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "kto
 ktor-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 ktor-serialization = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 napier = { module = "io.github.aakira:napier", version.ref = "napier" }
+sql-delight-android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sql-delight" }
+sql-delight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sql-delight" }
+sql-delight-native-driver = { module = "app.cash.sqldelight:native-driver", version.ref = "sql-delight" }
+sql-delight-runtime = { module = "app.cash.sqldelight:runtime", version.ref = "sql-delight" }
 voyager-koin = { module = "cafe.adriel.voyager:voyager-koin", version.ref = "voyager" }
 voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
 voyager-tab-navigator = { module = "cafe.adriel.voyager:voyager-tab-navigator", version.ref = "voyager" }
@@ -79,3 +84,4 @@ jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 icerokMokoResourcesMultiplatform = { id = "dev.icerock.mobile.multiplatform-resources" }
+sqlDelight = { id = "app.cash.sqldelight", version.ref = "sql-delight" }

@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.androidLibrary) apply false
     alias(libs.plugins.kotlinMultiplatform) apply false
     alias(libs.plugins.buildKonfig) apply false
+    alias(libs.plugins.sqlDelight) apply false
 }
 
 buildscript {

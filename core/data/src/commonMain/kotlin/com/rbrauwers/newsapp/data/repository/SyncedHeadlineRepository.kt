@@ -1,27 +1,32 @@
 package com.rbrauwers.newsapp.data.repository
 
+import com.rbrauwers.newsapp.common.isOk
+import com.rbrauwers.newsapp.data.model.toEntity
+import com.rbrauwers.newsapp.database.dao.HeadlineDao
+import com.rbrauwers.newsapp.database.model.toExternalModel
 import com.rbrauwers.newsapp.model.Article
 import com.rbrauwers.newsapp.network.NetworkDataSource
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 
 class SyncedHeadlineRepository(
-    private val networkDataSource: NetworkDataSource
+    private val networkDataSource: NetworkDataSource,
+    private val dao: HeadlineDao
 ) : HeadlineRepository {
 
-    private val _headlineFlow = MutableStateFlow<List<Article>?>(null)
-    private val headlineFlow = _headlineFlow.asStateFlow()
-
     override fun getHeadlines(): Flow<List<Article>?> {
-        return headlineFlow
+        return dao.getHeadlines().map { it.map { article -> article.toExternalModel() } }
     }
 
     override suspend fun sync() {
         runCatching {
-            networkDataSource.getHeadlines()
+            val response = networkDataSource.getHeadlines()
+
+            if (response.status.isOk()) {
+                dao.upsertHeadlines(response.articles.map { it.toEntity() })
+            }
         }.onSuccess {
-            _headlineFlow.emit(it.articles)
+
         }.onFailure {
             println("SyncedHeadlineRepository::sync failure $it")
         }
