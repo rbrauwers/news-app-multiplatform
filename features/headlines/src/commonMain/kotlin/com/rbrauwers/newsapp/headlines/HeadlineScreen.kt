@@ -170,7 +170,7 @@ internal fun Headline(
 
                 Text(
                     text = article.title.orEmpty(),
-                    maxLines = 4,
+                    maxLines = 3,
                     style = MaterialTheme.typography.bodyLarge,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.padding(vertical = 12.dp)

@@ -1,6 +1,11 @@
+import com.codingfeline.buildkonfig.compiler.FieldSpec
+import java.io.FileInputStream
+import java.util.*
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.buildKonfig)
 }
 
 @OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
@@ -64,5 +69,17 @@ android {
     compileSdk = 34
     defaultConfig {
         minSdk = 24
+    }
+}
+
+buildkonfig {
+    packageName = "com.rbrauwers.newsapp.network"
+
+    val properties = Properties().apply {
+        load(FileInputStream(File(rootProject.rootDir, "local.properties")))
+    }
+
+    defaultConfigs {
+        buildConfigField(FieldSpec.Type.STRING, "NEWS_API_KEY", properties.getProperty("newsApiKey"))
     }
 }
