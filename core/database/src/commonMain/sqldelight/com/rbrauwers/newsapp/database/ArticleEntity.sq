@@ -1,0 +1,30 @@
+CREATE TABLE ArticleEntity (
+    id INTEGER PRIMARY KEY NOT NULL,
+    author TEXT,
+    title TEXT,
+    description TEXT,
+    url TEXT,
+    urlToImage TEXT,
+    publishedAt TEXT,
+    content TEXT
+);
+
+selectAll:
+SELECT *
+FROM ArticleEntity ORDER BY publishedAt DESC;
+
+upsert {
+  UPDATE ArticleEntity
+  SET author = :author,
+      title = :title,
+      description = :description,
+      url = :url,
+      urlToImage = :urlToImage,
+      publishedAt = :publishedAt,
+      content = :content
+  WHERE id = :id;
+
+  INSERT OR IGNORE INTO ArticleEntity (id, author, title, description, url, urlToImage, publishedAt, content)
+  VALUES (:id, :author, :title, :description, :url, :urlToImage, :publishedAt, :content);
+}
+
