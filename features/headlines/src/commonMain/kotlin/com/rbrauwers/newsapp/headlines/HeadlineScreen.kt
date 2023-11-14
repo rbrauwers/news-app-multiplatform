@@ -144,7 +144,7 @@ internal fun Headline(
 ) {
     Card(
         modifier = Modifier
-            .height(200.dp)
+            .height(216.dp)
             .fillMaxWidth()
             .padding(
                 top = if (isFirst) 12.dp else 4.dp,
@@ -185,7 +185,7 @@ internal fun Headline(
                                 MaterialTheme.colorScheme.onPrimary,
                                 shape = MaterialTheme.shapes.small
                             )
-                            .padding(4.dp)
+                            .padding(8.dp)
                     )
                 }
             }
@@ -229,85 +229,5 @@ internal fun Headline(
             }
         }
 
-
-        /*
-        ConstraintLayout(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp)
-        ) {
-            val (author, title, date, image, web) = createRefs()
-            val context = LocalContext.current
-
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(article.urlToImage)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = "",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(70.dp)
-                    .clip(CircleShape)
-                    .constrainAs(image) {
-                        end.linkTo(parent.end)
-                    }
-            )
-
-            Text(
-                text = article.author.orEmpty(),
-                maxLines = 1,
-                style = MaterialTheme.typography.titleSmall,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.constrainAs(author) {
-                    width = Dimension.fillToConstraints
-                    start.linkTo(parent.start)
-                    end.linkTo(image.start, margin = 16.dp)
-                }
-            )
-
-            Text(
-                text = article.title.orEmpty(),
-                maxLines = 4,
-                style = MaterialTheme.typography.bodyLarge,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier
-                    .constrainAs(title) {
-                        width = Dimension.fillToConstraints
-                        top.linkTo(author.bottom, margin = 2.dp)
-                        start.linkTo(author.start)
-                        end.linkTo(author.end)
-                    }
-            )
-
-            Text(
-                text = article.publishedAt.orEmpty(),
-                style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier
-                    .constrainAs(date) {
-                        bottom.linkTo(web.bottom, margin = 4.dp)
-                        start.linkTo(author.start)
-                    }
-                    .background(
-                        MaterialTheme.colorScheme.onPrimary,
-                        shape = MaterialTheme.shapes.small
-                    )
-                    .padding(4.dp)
-            )
-
-            FilledIconButton(
-                onClick = {
-                    article.openUrl(context = context)
-                },
-                modifier = Modifier
-                    .constrainAs(web) {
-                        end.linkTo(image.end)
-                        bottom.linkTo(parent.bottom, margin = 0.dp)
-                    }
-            ) {
-                Icon(imageVector = Icons.Outlined.OpenInBrowser, contentDescription = "")
-            }
-        }
-         */
     }
 }
