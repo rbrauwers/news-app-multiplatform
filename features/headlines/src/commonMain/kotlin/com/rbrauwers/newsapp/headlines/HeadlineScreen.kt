@@ -1,6 +1,9 @@
 package com.rbrauwers.newsapp.headlines
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,11 +22,15 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.OpenInBrowser
 import androidx.compose.material3.Card
 import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.FilledIconToggleButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -142,6 +149,8 @@ internal fun Headline(
     isFirst: Boolean = false,
     isLast: Boolean = false
 ) {
+    val imageShape = RoundedCornerShape(8.dp)
+
     Card(
         modifier = Modifier
             .height(216.dp)
@@ -152,6 +161,9 @@ internal fun Headline(
                 start = 16.dp,
                 end = 16.dp
             )
+            .clickable {
+                openUrl(url = article.url)
+            }
     ) {
         Row(
             modifier = Modifier.fillMaxSize().padding(24.dp)
@@ -212,19 +224,19 @@ internal fun Headline(
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
                                 .size(70.dp)
-                                .clip(CircleShape)
+                                .clip(imageShape)
+                                .border(border = BorderStroke(width = 1.dp, color = Color.Black), shape = imageShape)
                                 .background(Color.Gray)
                         )
                     }
                 }
 
-                FilledIconButton(
-                    onClick = {
-                        openUrl(url = article.url)
-                    },
+                FilledIconToggleButton(
+                    checked = isFirst,
+                    onCheckedChange = { isChecked -> },
                     modifier = Modifier.align(Alignment.End)
                 ) {
-                    Icon(imageVector = Icons.Outlined.OpenInBrowser, contentDescription = "")
+                    Icon(imageVector = Icons.Default.FavoriteBorder, contentDescription = "")
                 }
             }
         }
