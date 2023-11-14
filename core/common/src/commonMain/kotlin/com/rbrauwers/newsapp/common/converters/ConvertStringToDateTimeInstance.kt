@@ -1,5 +1,6 @@
 package com.rbrauwers.newsapp.common.converters
 
+import format
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
@@ -12,8 +13,7 @@ class ConvertStringToDateTimeInstance(
 
     operator fun invoke(string: String?): String? {
         val instant = convertStringToDate(string) ?: return null
-        val date = instant.toLocalDateTime(TimeZone.UTC)
-        return "${date.monthNumber}/${date.dayOfMonth}/${date.year} ${date.hour}:${date.minute}"
+        return instant.format(dateFormat = DateTimeFormat.Medium, timeFormat = DateTimeFormat.Short)
     }
 
 }
