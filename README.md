@@ -12,7 +12,7 @@ The implementation follows [app architecture](https://developer.android.com/topi
 Data is fetched from the [News API](https://newsapi.org/) and stored locally.
 
 ## Setup
-Create an [API Key](https://newsapi.org/account) and place it at local.properties:
+Create an [API Key](https://newsapi.org/account) and place it at `local.properties`:
 ```
 newsApiKey=YOUR_API_KEY
 ```
