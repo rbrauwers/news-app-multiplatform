@@ -26,10 +26,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.outlined.Favorite
-import androidx.compose.material.icons.outlined.OpenInBrowser
 import androidx.compose.material3.Card
-import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FilledIconToggleButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -50,6 +47,7 @@ import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getNavigatorScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
@@ -79,7 +77,7 @@ object HeadlineTab : Tab {
 
     @Composable
     override fun Content() {
-        HeadlineScreen().Content()
+        Navigator(HeadlineScreen())
     }
 }
 
@@ -88,9 +86,6 @@ private class HeadlineScreen : Screen {
     @OptIn(ExperimentalVoyagerApi::class)
     @Composable
     override fun Content() {
-        //val screenModel = rememberScreenModel { HeadlineScreenModel() }
-        //val screenModel = getScreenModel<HeadlineScreenModel>()
-
         val navigator = LocalNavigator.currentOrThrow
         val screenModel = navigator.getNavigatorScreenModel<HeadlineScreenModel>()
 

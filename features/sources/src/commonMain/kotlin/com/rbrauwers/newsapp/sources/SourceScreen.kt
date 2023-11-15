@@ -32,6 +32,7 @@ import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getNavigatorScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
@@ -59,8 +60,9 @@ object SourceTab : Tab {
 
     @Composable
     override fun Content() {
-        SourcesScreen().Content()
+        Navigator(SourcesScreen())
     }
+
 }
 
 private class SourcesScreen: Screen {
