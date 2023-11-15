@@ -55,6 +55,7 @@ kotlin {
             implementation(libs.icerock.moko.resources)
             implementation(libs.icerock.moko.resources.compose)
 
+            implementation(project(":core:common"))
             implementation(project(":core:designsystem"))
             implementation(project(":core:model"))
             implementation(project(":core:network"))
