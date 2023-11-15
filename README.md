@@ -4,9 +4,9 @@ Kotlin Multiplatform project targeting Android and iOS.<br>
 The app displays news and his sources.<br>
 The implementation follows [app architecture](https://developer.android.com/topic/architecture) principles, such as modularization, dependency injection, single source of truth, etc.<br><br>
 
-|                                        Solarized dark                                        |                                    Solarized Ocean                                    |
-|:--------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------:|
-| [Android](https://github.com/rbrauwers/news-app/blob/main/screenshots/headlines_android.png) | ![iOS](https://github.com/rbrauwers/news-app/blob/main/screenshots/headlines_ios.png) |
+|                                                                         Solarized dark                                                                         |                                                                     Solarized Ocean                                                                     |
+|:--------------------------------------------------------------------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------:|
+| <img src="https://github.com/rbrauwers/news-app-multiplatform/blob/main/screenshots/headlines_android.png" alt="News app multiplaform (Android)" width="300"/> | <img src="https://github.com/rbrauwers/news-app-multiplatform/blob/main/screenshots/headlines_ios.png" alt="News app multiplatform (iOS)" width="300"/> |
 
 ## How it works
 Data is fetched from the [News API](https://newsapi.org/) and stored locally.
