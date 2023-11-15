@@ -11,6 +11,12 @@ The implementation follows [app architecture](https://developer.android.com/topi
 ## How it works
 Data is fetched from the [News API](https://newsapi.org/) and stored locally.
 
+## Setup
+Create an [API Key](https://newsapi.org/account) and place it at local.properties:
+```
+newsApiKey=YOUR_API_KEY
+```
+
 ## Stack
 - UI: [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/) + [Material](https://m3.material.io/develop/android/jetpack-compose) + [Coil](https://github.com/Kamel-Media/Kamel)
 - Navigation: [Voyager](https://voyager.adriel.cafe/)
