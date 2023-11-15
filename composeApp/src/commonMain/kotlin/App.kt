@@ -58,7 +58,7 @@ fun App() {
                         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
                         actions = {
                             val navigator = LocalNavigator.currentOrThrow
-                            if (navigator.lastItem.isHome()) {
+                            if (appState.isNavigationActionsEnabled) {
                                 IconButton(
                                     onClick = {
                                         navigator.push(InfoScreen(onAppStateChanged = setAppState))
@@ -73,7 +73,7 @@ fun App() {
                         },
                         navigationIcon = {
                             val navigator = LocalNavigator.currentOrThrow
-                            if (!navigator.lastItem.isHome()) {
+                            if (appState.isNavigationIconEnabled) {
                                 IconButton(onClick = { navigator.pop() }) {
                                     Icon(
                                         imageVector = Icons.Filled.ArrowBack,
@@ -146,10 +146,6 @@ private class TabsScreen(
             )
         }
     }
-}
-
-private fun Screen.isHome(): Boolean {
-    return this is TabsScreen
 }
 
 data class AppState(
