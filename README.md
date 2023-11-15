@@ -1,14 +1,21 @@
-This is a Kotlin Multiplatform project targeting Android, iOS.
+# News app (Multiplatform)
 
-* `/composeApp` is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - `commonMain` is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    `iosMain` would be the right folder for such calls.
+Kotlin Multiplatform project targeting Android and iOS.<br>
+The app displays news and his sources.<br>
+The implementation follows [app architecture](https://developer.android.com/topic/architecture) principles, such as modularization, dependency injection, single source of truth, etc.<br><br>
 
-* `/iosApp` contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform, 
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+|                                        Solarized dark                                        |                                    Solarized Ocean                                    |
+|:--------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------:|
+| [Android](https://github.com/rbrauwers/news-app/blob/main/screenshots/headlines_android.png) | ![iOS](https://github.com/rbrauwers/news-app/blob/main/screenshots/headlines_ios.png) |
 
+## How it works
+Data is fetched from the [News API](https://newsapi.org/) and stored locally.
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+## Stack
+- UI: [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/) + [Material](https://m3.material.io/develop/android/jetpack-compose) + [Coil](https://github.com/Kamel-Media/Kamel)
+- Navigation: [Voyager](https://voyager.adriel.cafe/)
+- Resources management: [Icerock](https://github.com/icerockdev/moko-resources)
+- Dependency injection: [Koin](https://insert-koin.io/)
+- Network: [Ktor](https://ktor.io/)
+- Local storage: [SQLDelight](https://github.com/cashapp/sqldelight)
+- Build system: [Gradle Version Catalog](https://docs.gradle.org/current/userguide/platforms.html)

@@ -29,7 +29,7 @@ private data class Lib(
 
 private val libs = listOf(
     Lib(name = "Icerock", url = "https://github.com/icerockdev/moko-resources"),
-    Lib(name = "Jetpack Compose", url = "https://developer.android.com/jetpack/compose"),
+    Lib(name = "Jetpack Compose", url = "https://www.jetbrains.com/lp/compose-multiplatform/"),
     Lib(name = "Kamel", url = "https://github.com/Kamel-Media/Kamel"),
     Lib(name = "Koin", url = "https://insert-koin.io/"),
     Lib(name = "Ktor", url = "https://ktor.io/"),

@@ -118,6 +118,7 @@ private fun RowScope.TabNavigationItem(
     )
 }
 
+// TODO: onAppStateChanged property makes this class not serializable, causing crashes
 private class TabsScreen(
     val onAppStateChanged: (AppState) -> Unit
 ) : Screen {
