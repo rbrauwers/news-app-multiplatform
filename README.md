@@ -1,7 +1,7 @@
 # News app (Multiplatform)
 
 Kotlin Multiplatform project targeting Android and iOS.<br>
-The app displays news and his sources.<br>
+The app displays news and its sources.<br>
 The implementation follows [app architecture](https://developer.android.com/topic/architecture) principles, such as modularization, dependency injection, single source of truth, etc.<br><br>
 
 |                                                                            Android                                                                             |                                                                           iOS                                                                           |
