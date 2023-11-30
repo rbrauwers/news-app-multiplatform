@@ -4,7 +4,7 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.rbrauwers.newsapp.common.Result
 import com.rbrauwers.newsapp.common.asResult
-import com.rbrauwers.newsapp.common.converters.ConvertStringToDateTimeInstance
+import com.rbrauwers.newsapp.common.converters.ConvertStringToFormattedDate
 import com.rbrauwers.newsapp.data.repository.HeadlineRepository
 import com.rbrauwers.newsapp.model.Article
 import kotlinx.coroutines.flow.Flow
@@ -53,13 +53,13 @@ private fun Result<List<Article>>.toHeadlineUiState(): HeadlineUiState {
         is Result.Loading -> HeadlineUiState.Loading
         is Result.Error -> HeadlineUiState.Error
         is Result.Success -> {
-            val converter = ConvertStringToDateTimeInstance()
+            val converter = ConvertStringToFormattedDate()
             HeadlineUiState.Success(data.map { it.toArticleUi(converter) })
         }
     }
 }
 
-private fun Article.toArticleUi(dateConverter: ConvertStringToDateTimeInstance) = ArticleUi(
+private fun Article.toArticleUi(dateConverter: ConvertStringToFormattedDate) = ArticleUi(
     id = id,
     author = if (author.isNullOrBlank()) "Author: N/A" else author,
     title = title,

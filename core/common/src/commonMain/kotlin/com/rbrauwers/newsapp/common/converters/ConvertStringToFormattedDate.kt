@@ -1,13 +1,11 @@
 package com.rbrauwers.newsapp.common.converters
 
 import format
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 
 /**
  * Converts a string to formatted date, using default date time format.
  */
-class ConvertStringToDateTimeInstance(
+class ConvertStringToFormattedDate(
     private val convertStringToDate: ConvertStringToDate = ConvertStringToDate()
 ) {
 
