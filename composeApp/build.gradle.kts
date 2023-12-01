@@ -25,6 +25,8 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+            //export(libs.icerock.moko.resources)
+            //export(libs.icerock.moko.graphics)
         }
     }
     
@@ -53,10 +55,11 @@ kotlin {
             implementation(libs.koin.compose)
             implementation(libs.koin.core)
 
-            implementation(libs.voyager.tab.navigator)
-
             implementation(libs.icerock.moko.resources)
             implementation(libs.icerock.moko.resources.compose)
+
+            implementation(libs.decompose)
+            implementation(libs.decompose.extensions)
 
             implementation(project(":core:common"))
             implementation(project(":core:designsystem"))
@@ -64,6 +67,7 @@ kotlin {
             implementation(project(":core:network"))
             implementation(project(":features:headlines"))
             implementation(project(":features:sources"))
+            implementation(project(":resources"))
         }
     }
 }

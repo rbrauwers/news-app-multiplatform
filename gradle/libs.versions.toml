@@ -17,6 +17,7 @@ compose-compiler = "1.5.3"
 compose-plugin = "1.5.10"
 coroutines = "1.7.3"
 datetime = "0.4.1"
+decompose = "2.2.0-compose-experimental-beta02"
 icerock-graphics = "0.9.0"
 icerock-resources = "0.23.0"
 junit = "4.13.2"
@@ -28,7 +29,6 @@ ktor = "2.3.6"
 logback = "1.4.11"
 napier = "2.6.1"
 sql-delight = "2.0.0"
-voyager = "1.0.0-rc10"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
@@ -43,6 +43,8 @@ androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-co
 androidx-material = { group = "com.google.android.material", name = "material", version.ref = "androidx-material" }
 androidx-test-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-junit" }
 ch-qos-logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
+decompose-extensions = { module = "com.arkivanov.decompose:extensions-compose-jetbrains", version.ref = "decompose" }
 datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime" }
 icerock-moko-graphics = { module = "dev.icerock.moko:graphics", version.ref = "icerock-graphics" }
 icerock-moko-resources = { module = "dev.icerock.moko:resources", version.ref = "icerock-resources" }
@@ -69,9 +71,6 @@ sql-delight-android-driver = { module = "app.cash.sqldelight:android-driver", ve
 sql-delight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sql-delight" }
 sql-delight-native-driver = { module = "app.cash.sqldelight:native-driver", version.ref = "sql-delight" }
 sql-delight-runtime = { module = "app.cash.sqldelight:runtime", version.ref = "sql-delight" }
-voyager-koin = { module = "cafe.adriel.voyager:voyager-koin", version.ref = "voyager" }
-voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
-voyager-tab-navigator = { module = "cafe.adriel.voyager:voyager-tab-navigator", version.ref = "voyager" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

@@ -1,7 +1,14 @@
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -11,165 +18,232 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.CurrentScreen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.Navigator
-import cafe.adriel.voyager.navigator.currentOrThrow
-import cafe.adriel.voyager.navigator.tab.CurrentTab
-import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
-import cafe.adriel.voyager.navigator.tab.Tab
-import cafe.adriel.voyager.navigator.tab.TabNavigator
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.slide
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
+import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.rbrauwers.newsapp.designsystem.theme.NewsAppTheme
-import com.rbrauwers.newsapp.headlines.HeadlineTab
-import com.rbrauwers.newsapp.sources.SourceTab
-import info.InfoScreen
-import org.koin.compose.koinInject
-import org.koin.core.parameter.parametersOf
+import com.rbrauwers.newsapp.headlines.HeadlineScreen
+import com.rbrauwers.newsapp.resources.MultiplatformResources
+import com.rbrauwers.newsapp.sources.SourceScreen
+import components.RootComponent
+import dev.icerock.moko.resources.compose.stringResource
+import info.InfoScreen2
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun App() {
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+fun App(component: RootComponent, modifier: Modifier = Modifier) {
+    val childStack by component.stack.subscribeAsState()
+    val childUiState = childStack.active.instance.uiState()
+    val activeChild = childStack.active.instance
 
     NewsAppTheme {
-        val (appState, setAppState) = remember {
-            mutableStateOf(AppState())
-        }
-
-        /**
-         * Creates AppStateBinder singleton for usage within the hierarchy.
-         */
-        koinInject<AppStateBinder>(parameters = {
-            parametersOf(setAppState)
-        })
-
-        Navigator(TabsScreen()) {
-            Scaffold(
-                topBar = {
-                    CenterAlignedTopAppBar(
-                        title = {
-                            Text(
-                                text = appState.title,
-                                style = MaterialTheme.typography.titleLarge
-                            )
-                        },
-                        scrollBehavior = scrollBehavior,
-                        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-                        actions = {
-                            val navigator = LocalNavigator.currentOrThrow
-                            if (appState.isNavigationActionsEnabled) {
-                                IconButton(
-                                    onClick = {
-                                        navigator.push(InfoScreen(onAppStateChanged = setAppState))
-                                    }
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Outlined.Info,
-                                        contentDescription = null
-                                    )
-                                }
-                            }
-                        },
-                        navigationIcon = {
-                            val navigator = LocalNavigator.currentOrThrow
-                            if (appState.isNavigationIconEnabled) {
-                                IconButton(onClick = { navigator.pop() }) {
-                                    Icon(
-                                        imageVector = Icons.Filled.ArrowBack,
-                                        contentDescription = null
-                                    )
-                                }
-                            }
-                        }
-                    )
-                },
-                content = {
-                    Surface(modifier = Modifier.padding(it)) {
-                        CurrentScreen()
-                    }
-                }
+        Scaffold(
+            topBar = {
+                NewsAppTopBar(
+                    component = component,
+                    childUiState = childUiState
+                )
+            },
+            bottomBar = {
+                NewsAppBottomBar(
+                    component = component,
+                    childUiState = childUiState,
+                    activeChild = activeChild
+                )
+            },
+            modifier = modifier
+        ) {
+            NewsAppChildren(
+                component = component,
+                modifier = Modifier.padding(it)
             )
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun RowScope.TabNavigationItem(
-    tab: Tab
+private fun NewsAppTopBar(
+    component: RootComponent,
+    childUiState: ChildUIState
 ) {
-    val tabNavigator = LocalTabNavigator.current
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
-    NavigationBarItem(
-        selected = tabNavigator.current.key == tab.key,
-        onClick = {
-            tabNavigator.current = tab
+    CenterAlignedTopAppBar(
+        title = {
+            Text(
+                text = childUiState.title,
+                style = MaterialTheme.typography.titleLarge
+            )
         },
+        actions = {
+            if (childUiState.hasNavigationActions) {
+                IconButton(
+                    onClick = {
+                        component.onInfoClicked()
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Info,
+                        contentDescription = null
+                    )
+                }
+            }
+        },
+        navigationIcon = {
+            if (childUiState.isBackButtonVisible) {
+                IconButton(onClick = { component.onBackClicked() }) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = null
+                    )
+                }
+            }
+        },
+        scrollBehavior = scrollBehavior,
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+    )
+}
+
+@Composable
+private fun NewsAppChildren(component: RootComponent, modifier: Modifier) {
+    Children(
+        stack = component.stack,
+        animation = stackAnimation(fade()),
+        modifier = modifier
+    ) { child ->
+        when (val instance = child.instance) {
+            is RootComponent.NewsAppChild.Headlines -> {
+                HeadlineScreen(component = instance.component)
+            }
+
+            is RootComponent.NewsAppChild.Sources -> {
+                SourceScreen(component = instance.component)
+            }
+
+            is RootComponent.NewsAppChild.Info -> {
+                InfoScreen2()
+            }
+        }
+    }
+}
+
+@Composable
+private fun NewsAppBottomBar(
+    component: RootComponent,
+    childUiState: ChildUIState,
+    activeChild: RootComponent.NewsAppChild,
+    modifier: Modifier = Modifier
+) {
+    AnimatedVisibility(
+        visible = childUiState.isBottomBarVisible,
+        enter = fadeIn() + slideInVertically(initialOffsetY = { fullHeight ->  fullHeight/2 }),
+        exit = fadeOut() + slideOutVertically(targetOffsetY = { fullHeight ->  fullHeight/2 })
+    ) {
+        NavigationBar(modifier = modifier) {
+            HeadlinesBarItem(component = component, activeChild = activeChild)
+            SourcesBarItem(component = component, activeChild = activeChild)
+        }
+    }
+}
+
+@Composable
+private fun RowScope.HeadlinesBarItem(component: RootComponent, activeChild: RootComponent.NewsAppChild) {
+    val uiState = ChildUIState.Headlines(isSelected = activeChild is RootComponent.NewsAppChild.Headlines)
+    NewsBarItem(uiState = uiState, onClick = component::onHeadlinesTabClicked)
+}
+
+@Composable
+private fun RowScope.SourcesBarItem(component: RootComponent, activeChild: RootComponent.NewsAppChild) {
+    val uiState = ChildUIState.Sources(isSelected = activeChild is RootComponent.NewsAppChild.Sources)
+    NewsBarItem(uiState = uiState, onClick = component::onSourcesTabClicked)
+}
+
+@Composable
+private fun RowScope.NewsBarItem(uiState: ChildUIState, onClick: () -> Unit) {
+    NavigationBarItem(
+        selected = uiState.isSelected ?: false,
+        onClick = onClick,
         icon = {
-            tab.options.icon?.apply {
-                Icon(painter = this, contentDescription = tab.options.title)
+            uiState.icon?.let { icon ->
+                Icon(
+                    imageVector = icon,
+                    contentDescription = uiState.title,
+                )
             }
         },
         label = {
-            Text(text = tab.options.title)
+            Text(uiState.title)
         }
     )
 }
 
-private class TabsScreen : Screen {
+private fun RootComponent.NewsAppChild.uiState(): ChildUIState {
+    return when (this) {
+        is RootComponent.NewsAppChild.Headlines -> {
+            ChildUIState.Headlines()
+        }
 
-    @Composable
-    override fun Content() {
-        TabNavigator(HeadlineTab) { tabNavigator ->
-            val appStateBinder = koinInject<AppStateBinder>()
+        is RootComponent.NewsAppChild.Sources -> {
+            ChildUIState.Sources()
+        }
 
-            appStateBinder.bind(
-                AppState(
-                    title = tabNavigator.current.options.title,
-                    isNavigationIconEnabled = false,
-                    isNavigationActionsEnabled = true
-                )
-            )
-
-            Scaffold(
-                content = {
-                    CurrentTab()
-                },
-                bottomBar = {
-                    NavigationBar {
-                        TabNavigationItem(HeadlineTab)
-                        TabNavigationItem(SourceTab)
-                    }
-                },
-            )
+        is RootComponent.NewsAppChild.Info -> {
+            ChildUIState.Info()
         }
     }
 }
 
-internal data class AppState(
-    val title: String = "",
-    val isNavigationIconEnabled: Boolean = false,
-    val isNavigationActionsEnabled: Boolean = false
-) : JavaSerializable
+private sealed interface ChildUIState {
+    @get:Composable
+    val title: String
 
-/**
- * Normally the setter would be passed as a lambda param to composables,
- * but this is not supported by voyager.
- * https://voyager.adriel.cafe/state-restoration
- */
-internal data class AppStateBinder(
-    private val setter: (AppState) -> Unit
-) : JavaSerializable {
-    fun bind(appState: AppState) {
-        setter(appState)
+    val icon: ImageVector?
+    val isSelected: Boolean?
+    val isBottomBarVisible: Boolean
+    val hasNavigationActions: Boolean
+    val isBackButtonVisible: Boolean
+
+    data class Headlines(override val isSelected: Boolean? = null) : ChildUIState {
+        override val title: String
+            @Composable get() = stringResource(MultiplatformResources.strings.headlines)
+
+        override val icon: ImageVector
+            get() = Icons.Default.List
+
+        override val isBottomBarVisible: Boolean = true
+        override val hasNavigationActions: Boolean = true
+        override val isBackButtonVisible: Boolean = false
+    }
+
+    data class Sources(override val isSelected: Boolean? = null) : ChildUIState {
+        override val title: String
+            @Composable get() = stringResource(MultiplatformResources.strings.sources)
+
+        override val icon: ImageVector
+            get() = Icons.Default.Person
+
+        override val isBottomBarVisible: Boolean = true
+        override val hasNavigationActions: Boolean = true
+        override val isBackButtonVisible: Boolean = false
+    }
+
+    data class Info(override val isSelected: Boolean? = null) : ChildUIState {
+        override val title: String
+            @Composable get() = stringResource(MultiplatformResources.strings.app_info)
+
+        override val icon: ImageVector? = null
+        override val isBottomBarVisible: Boolean = false
+        override val hasNavigationActions: Boolean = false
+        override val isBackButtonVisible: Boolean = true
     }
 }

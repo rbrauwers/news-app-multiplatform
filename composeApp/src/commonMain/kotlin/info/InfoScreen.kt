@@ -1,6 +1,5 @@
 package info
 
-import AppState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,7 +18,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.Screen
 import openUrl
 
 private data class Lib(
@@ -28,6 +26,7 @@ private data class Lib(
 )
 
 private val libs = listOf(
+    Lib(name = "Decompose", url = "https://arkivanov.github.io/Decompose/"),
     Lib(name = "Jetpack Compose", url = "https://www.jetbrains.com/lp/compose-multiplatform/"),
     Lib(name = "Kamel", url = "https://github.com/Kamel-Media/Kamel"),
     Lib(name = "Koin", url = "https://insert-koin.io/"),
@@ -35,24 +34,11 @@ private val libs = listOf(
     Lib(name = "Material", url = "https://m3.material.io/develop/android/jetpack-compose"),
     Lib(name = "Moko Resources", url = "https://github.com/icerockdev/moko-resources"),
     Lib(name = "SQLDelight", url = "https://github.com/cashapp/sqldelight"),
-    Lib(name = "Voyager", url = "https://voyager.adriel.cafe/")
 )
 
-internal data class InfoScreen(private val onAppStateChanged: (AppState) -> Unit) : Screen {
-
-    @Composable
-    override fun Content() {
-        onAppStateChanged(
-            AppState(
-                title = "App info",
-                isNavigationIconEnabled = true,
-                isNavigationActionsEnabled = false
-            )
-        )
-
-        InfoScreenContent(modifier = Modifier.fillMaxSize())
-    }
-
+@Composable
+internal fun InfoScreen2() {
+    InfoScreenContent(modifier = Modifier.fillMaxSize())
 }
 
 @Composable
