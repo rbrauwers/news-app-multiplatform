@@ -33,6 +33,8 @@ import com.rbrauwers.newsapp.designsystem.theme.NewsAppTheme
 import com.rbrauwers.newsapp.headlines.HeadlineTab
 import com.rbrauwers.newsapp.sources.SourceTab
 import info.InfoScreen
+import org.koin.compose.koinInject
+import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,7 +46,14 @@ fun App() {
             mutableStateOf(AppState())
         }
 
-        Navigator(TabsScreen(onAppStateChanged = setAppState)) {
+        /**
+         * Creates AppStateBinder singleton for usage within the hierarchy.
+         */
+        koinInject<AppStateBinder>(parameters = {
+            parametersOf(setAppState)
+        })
+
+        Navigator(TabsScreen()) {
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
@@ -104,8 +113,6 @@ private fun RowScope.TabNavigationItem(
         selected = tabNavigator.current.key == tab.key,
         onClick = {
             tabNavigator.current = tab
-
-
         },
         icon = {
             tab.options.icon?.apply {
@@ -118,15 +125,14 @@ private fun RowScope.TabNavigationItem(
     )
 }
 
-// TODO: onAppStateChanged property makes this class not serializable, causing crashes
-private class TabsScreen(
-    val onAppStateChanged: (AppState) -> Unit
-) : Screen {
+private class TabsScreen : Screen {
 
     @Composable
     override fun Content() {
         TabNavigator(HeadlineTab) { tabNavigator ->
-            onAppStateChanged(
+            val appStateBinder = koinInject<AppStateBinder>()
+
+            appStateBinder.bind(
                 AppState(
                     title = tabNavigator.current.options.title,
                     isNavigationIconEnabled = false,
@@ -149,10 +155,21 @@ private class TabsScreen(
     }
 }
 
-data class AppState(
+internal data class AppState(
     val title: String = "",
     val isNavigationIconEnabled: Boolean = false,
     val isNavigationActionsEnabled: Boolean = false
-)
+) : JavaSerializable
 
-
+/**
+ * Normally the setter would be passed as a lambda param to composables,
+ * but this is not supported by voyager.
+ * https://voyager.adriel.cafe/state-restoration
+ */
+internal data class AppStateBinder(
+    private val setter: (AppState) -> Unit
+) : JavaSerializable {
+    fun bind(appState: AppState) {
+        setter(appState)
+    }
+}

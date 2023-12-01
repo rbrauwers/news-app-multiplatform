@@ -28,17 +28,17 @@ private data class Lib(
 )
 
 private val libs = listOf(
-    Lib(name = "Icerock", url = "https://github.com/icerockdev/moko-resources"),
     Lib(name = "Jetpack Compose", url = "https://www.jetbrains.com/lp/compose-multiplatform/"),
     Lib(name = "Kamel", url = "https://github.com/Kamel-Media/Kamel"),
     Lib(name = "Koin", url = "https://insert-koin.io/"),
     Lib(name = "Ktor", url = "https://ktor.io/"),
     Lib(name = "Material", url = "https://m3.material.io/develop/android/jetpack-compose"),
+    Lib(name = "Moko Resources", url = "https://github.com/icerockdev/moko-resources"),
     Lib(name = "SQLDelight", url = "https://github.com/cashapp/sqldelight"),
     Lib(name = "Voyager", url = "https://voyager.adriel.cafe/")
 )
 
-internal class InfoScreen(private val onAppStateChanged: (AppState) -> Unit) : Screen {
+internal data class InfoScreen(private val onAppStateChanged: (AppState) -> Unit) : Screen {
 
     @Composable
     override fun Content() {

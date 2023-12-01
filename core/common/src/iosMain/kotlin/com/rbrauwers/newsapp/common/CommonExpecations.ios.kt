@@ -40,3 +40,5 @@ private fun DateTimeFormat.toNSDateFormatterStyle(): ULong {
         }
     }
 }
+
+actual interface JavaSerializable

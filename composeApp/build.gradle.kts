@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.kotlin.serialization)
     id("dev.icerock.mobile.multiplatform-resources")
 }
 
@@ -40,6 +41,8 @@ kotlin {
         }
 
         commonMain.dependencies {
+            implementation(libs.kotlinx.serialization.json)
+
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)

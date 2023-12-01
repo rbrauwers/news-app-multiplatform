@@ -7,3 +7,5 @@ expect fun Instant.format(dateFormat: DateTimeFormat, timeFormat: DateTimeFormat
 enum class DateTimeFormat {
     Short, Medium, Long
 }
+
+expect interface JavaSerializable
