@@ -2,4 +2,5 @@
 <resources>
     <string name="headlines">Headlines</string>
     <string name="sources">Sources</string>
+    <string name="app_info">App info</string>
 </resources>

@@ -50,14 +50,13 @@ kotlin {
                 implementation(libs.koin.compose)
                 implementation(libs.koin.core)
 
-                implementation(libs.voyager.koin)
-                implementation(libs.voyager.navigator)
-                implementation(libs.voyager.tab.navigator)
-
                 implementation(libs.kamel)
 
                 implementation(libs.icerock.moko.resources)
                 implementation(libs.icerock.moko.resources.compose)
+
+                implementation(libs.decompose)
+                implementation(libs.decompose.extensions)
 
                 implementation(project(":core:common"))
                 implementation(project(":core:data"))

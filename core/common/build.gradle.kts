@@ -34,6 +34,9 @@ kotlin {
                 implementation(libs.koin.core)
 
                 implementation(libs.kotlin.coroutines.core)
+
+                implementation(libs.decompose)
+                implementation(libs.decompose.extensions)
             }
         }
         val commonTest by getting {
