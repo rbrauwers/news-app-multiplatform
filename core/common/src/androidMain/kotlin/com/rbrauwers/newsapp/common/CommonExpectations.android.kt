@@ -46,5 +46,3 @@ private fun DateTimeFormat.toSimpleDateFormat(): Int {
         }
     }
 }
-
-actual typealias JavaSerializable = java.io.Serializable
