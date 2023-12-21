@@ -19,6 +19,8 @@ import kotlin.coroutines.CoroutineContext
 
 interface HeadlinesComponent {
     val headlineUiState: StateFlow<HeadlineUiState>
+
+    fun updateLiked(article: ArticleUi, value: Boolean)
 }
 
 internal class DefaultHeadlinesComponent(
@@ -51,6 +53,14 @@ internal class DefaultHeadlinesComponent(
             .asResult()
             .map { it.toHeadlineUiState() }
     }
+
+    override fun updateLiked(article: ArticleUi, value: Boolean) {
+        scope.launch {
+            headlineRepository
+                .updateLiked(id = article.id.toLong(), value = value)
+        }
+    }
+
 }
 
 sealed interface HeadlineUiState {
@@ -76,7 +86,8 @@ private fun Article.toArticleUi(dateConverter: ConvertStringToFormattedDate) = A
     title = title,
     urlToImage = urlToImage,
     url = url,
-    publishedAt = dateConverter(publishedAt)
+    publishedAt = dateConverter(publishedAt),
+    liked = liked
 )
 
 data class ArticleUi(
@@ -85,5 +96,6 @@ data class ArticleUi(
     val title: String?,
     val urlToImage: String?,
     val url: String?,
-    val publishedAt: String?
+    val publishedAt: String?,
+    val liked: Boolean
 )

@@ -35,4 +35,8 @@ internal class HeadlineDaoImpl(
         }
     }
 
+    override suspend fun updateLiked(id: Long, value: Boolean) {
+        queries.updateLiked(id = id, liked = if (value) 1L else 0L)
+    }
+
 }

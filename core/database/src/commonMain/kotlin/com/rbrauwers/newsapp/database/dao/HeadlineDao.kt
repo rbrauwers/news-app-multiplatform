@@ -9,4 +9,6 @@ interface HeadlineDao {
 
     suspend fun upsertHeadlines(headlines: List<ArticleEntity>)
 
+    suspend fun updateLiked(id: Long, value: Boolean)
+
 }

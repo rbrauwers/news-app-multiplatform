@@ -6,7 +6,8 @@ CREATE TABLE ArticleEntity (
     url TEXT,
     urlToImage TEXT,
     publishedAt TEXT,
-    content TEXT
+    content TEXT,
+    liked INTEGER DEFAULT 0
 );
 
 selectAll:
@@ -28,3 +29,8 @@ upsert {
   VALUES (:id, :author, :title, :description, :url, :urlToImage, :publishedAt, :content);
 }
 
+updateLiked {
+    UPDATE ArticleEntity
+    SET liked = :liked
+    WHERE id = :id;
+}
