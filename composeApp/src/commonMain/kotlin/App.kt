@@ -28,7 +28,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.rbrauwers.newsapp.designsystem.theme.NewsAppTheme
@@ -37,7 +36,7 @@ import com.rbrauwers.newsapp.resources.MultiplatformResources
 import com.rbrauwers.newsapp.sources.SourceScreen
 import components.RootComponent
 import dev.icerock.moko.resources.compose.stringResource
-import info.InfoScreen2
+import info.InfoScreen
 
 @Composable
 fun App(component: RootComponent, modifier: Modifier = Modifier) {
@@ -131,7 +130,7 @@ private fun NewsAppChildren(component: RootComponent, modifier: Modifier) {
             }
 
             is RootComponent.NewsAppChild.Info -> {
-                InfoScreen2()
+                InfoScreen()
             }
         }
     }
@@ -146,8 +145,8 @@ private fun NewsAppBottomBar(
 ) {
     AnimatedVisibility(
         visible = childUiState.isBottomBarVisible,
-        enter = fadeIn() + slideInVertically(initialOffsetY = { fullHeight ->  fullHeight/2 }),
-        exit = fadeOut() + slideOutVertically(targetOffsetY = { fullHeight ->  fullHeight/2 })
+        enter = fadeIn() + slideInVertically(initialOffsetY = { fullHeight -> fullHeight/2 }),
+        exit = fadeOut() + slideOutVertically(targetOffsetY = { fullHeight -> fullHeight/2 })
     ) {
         NavigationBar(modifier = modifier) {
             HeadlinesBarItem(component = component, activeChild = activeChild)

@@ -25,14 +25,12 @@ class SyncedHeadlineRepository(
         runCatching {
             val response = networkDataSource.getHeadlines()
 
-            // Saves data in local store regardless even if coroutine context was cancelled
+            // Saves data in local store regardless if coroutine context was cancelled
             withContext(NonCancellable) {
                 if (response.status.isOk()) {
                     dao.upsertHeadlines(response.articles.map { it.toEntity() })
                 }
             }
-        }.onSuccess {
-
         }.onFailure {
             // Do not suppress coroutine cancellations
             if (it is CancellationException) throw it

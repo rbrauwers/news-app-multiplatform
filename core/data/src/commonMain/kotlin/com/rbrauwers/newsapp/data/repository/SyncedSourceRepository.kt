@@ -31,7 +31,6 @@ class SyncedSourceRepository(
                     dao.upsertSources(response.sources.map { it.toEntity() })
                 }
             }
-        }.onSuccess {
         }.onFailure {
             // Do not suppress coroutine cancellations
             if (it is CancellationException) throw it

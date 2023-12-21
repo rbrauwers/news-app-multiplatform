@@ -37,7 +37,7 @@ private val libs = listOf(
 )
 
 @Composable
-internal fun InfoScreen2() {
+internal fun InfoScreen() {
     InfoScreenContent(modifier = Modifier.fillMaxSize())
 }
 
