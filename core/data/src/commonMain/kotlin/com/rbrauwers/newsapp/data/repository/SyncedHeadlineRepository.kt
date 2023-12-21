@@ -38,4 +38,7 @@ class SyncedHeadlineRepository(
         }
     }
 
+    override suspend fun updateLiked(id: Long, value: Boolean) {
+        dao.updateLiked(id = id, value)
+    }
 }

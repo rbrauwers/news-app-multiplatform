@@ -9,5 +9,7 @@ interface HeadlineRepository {
 
     suspend fun sync()
 
+    suspend fun updateLiked(id: Long, value: Boolean)
+
 }
 

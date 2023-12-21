@@ -48,12 +48,18 @@ import openUrl
 @Composable
 fun HeadlineScreen(component: HeadlinesComponent) {
     val uiState: HeadlineUiState by component.headlineUiState.collectAsState()
-    HeadlineScreenContent(uiState = uiState)
+    HeadlineScreenContent(
+        uiState = uiState,
+        onLikedChanged = { article, liked ->
+            component.updateLiked(article = article, liked)
+        }
+    )
 }
 
 @Composable
 private fun HeadlineScreenContent(
-    uiState: HeadlineUiState
+    uiState: HeadlineUiState,
+    onLikedChanged: (ArticleUi, Boolean) -> Unit
 ) {
     when (uiState) {
         is HeadlineUiState.Error -> {
@@ -65,32 +71,43 @@ private fun HeadlineScreenContent(
         }
 
         is HeadlineUiState.Success -> {
-            HeadlinesList(uiState = uiState)
+            HeadlinesList(uiState = uiState, onLikedChanged = onLikedChanged)
         }
     }
-
 }
 
 @Composable
 private fun HeadlinesList(
     listState: LazyListState = rememberLazyListState(),
-    uiState: HeadlineUiState.Success
+    uiState: HeadlineUiState.Success,
+    onLikedChanged: (ArticleUi, Boolean) -> Unit
 ) {
     LazyColumn(
         state = listState,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        headlines(headlines = uiState.headlines)
+        headlines(
+            headlines = uiState.headlines,
+            onLikedChanged = onLikedChanged
+        )
     }
 }
 
-private fun LazyListScope.headlines(headlines: List<ArticleUi>) {
+private fun LazyListScope.headlines(
+    headlines: List<ArticleUi>,
+    onLikedChanged: (ArticleUi, Boolean) -> Unit
+) {
     itemsIndexed(
         items = headlines,
         key = { _, article -> article.id }
     ) { index, article ->
-        Headline(article = article, isFirst = index == 0, isLast = index == headlines.lastIndex)
+        Headline(
+            article = article,
+            isFirst = index == 0,
+            isLast = index == headlines.lastIndex,
+            onLikedChanged = onLikedChanged
+        )
     }
 }
 
@@ -98,7 +115,8 @@ private fun LazyListScope.headlines(headlines: List<ArticleUi>) {
 internal fun Headline(
     article: ArticleUi,
     isFirst: Boolean = false,
-    isLast: Boolean = false
+    isLast: Boolean = false,
+    onLikedChanged: (ArticleUi, Boolean) -> Unit
 ) {
     val imageShape = RoundedCornerShape(8.dp)
 
@@ -173,18 +191,24 @@ internal fun Headline(
                             resource = asyncPainterResource(data = url),
                             contentDescription = null,
                             contentScale = ContentScale.Crop,
+                            onFailure = { },
                             modifier = Modifier
                                 .size(70.dp)
                                 .clip(imageShape)
-                                .border(border = BorderStroke(width = 1.dp, color = Color.Black), shape = imageShape)
+                                .border(
+                                    border = BorderStroke(width = 1.dp, color = Color.Black),
+                                    shape = imageShape
+                                )
                                 .background(Color.Gray)
                         )
                     }
                 }
 
                 FilledIconToggleButton(
-                    checked = isFirst,
-                    onCheckedChange = { isChecked -> },
+                    checked = article.liked,
+                    onCheckedChange = { isChecked ->
+                        onLikedChanged(article, isChecked)
+                    },
                     modifier = Modifier.align(Alignment.End)
                 ) {
                     Icon(imageVector = Icons.Default.FavoriteBorder, contentDescription = "")

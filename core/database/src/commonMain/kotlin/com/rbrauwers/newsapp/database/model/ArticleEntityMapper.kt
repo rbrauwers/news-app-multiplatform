@@ -11,5 +11,6 @@ fun ArticleEntity.toExternalModel() = Article(
     url = url,
     urlToImage = urlToImage,
     publishedAt = publishedAt,
-    content = content
+    content = content,
+    liked = liked == 1L
 )
