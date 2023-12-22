@@ -2,6 +2,7 @@ package com.rbrauwers.newsapp.headlines
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import com.rbrauwers.newsapp.common.converters.ConvertStringToFormattedDate
 
 @Preview
 @Composable
@@ -15,7 +16,8 @@ private fun HeadlinePreview() {
             urlToImage = null,
             url = "https://google.com",
             publishedAt = "2023-01-02 10:21:00",
-            liked = false
+            liked = false,
+            dateConverter = ConvertStringToFormattedDate()
         ),
         onLikedChanged = { article, liked -> }
     )

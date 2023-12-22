@@ -58,6 +58,8 @@ kotlin {
                 implementation(libs.decompose)
                 implementation(libs.decompose.extensions)
 
+                implementation(libs.kotlinx.collections.immutable)
+
                 implementation(project(":core:common"))
                 implementation(project(":core:data"))
                 implementation(project(":core:designsystem"))
