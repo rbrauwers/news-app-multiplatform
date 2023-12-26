@@ -51,6 +51,8 @@ kotlin {
                 implementation(libs.koin.compose)
                 implementation(libs.koin.core)
 
+                implementation(libs.kotlinx.collections.immutable)
+
                 implementation(libs.kamel)
 
                 implementation(libs.icerock.moko.resources)

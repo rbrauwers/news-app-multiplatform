@@ -1,16 +1,22 @@
 package com.rbrauwers.newsapp.sources
 
+import androidx.compose.runtime.Immutable
 import com.arkivanov.decompose.ComponentContext
 import com.rbrauwers.newsapp.common.Result
 import com.rbrauwers.newsapp.common.asResult
 import com.rbrauwers.newsapp.common.coroutineScope
 import com.rbrauwers.newsapp.data.repository.SourceRepository
 import com.rbrauwers.newsapp.model.NewsSource
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -31,6 +37,7 @@ internal class DefaultSourcesComponent(
 
     override val sourceUiState: StateFlow<SourceUiState> =
         produceSourceUiState()
+            .flowOn(Dispatchers.IO)
             .stateIn(
                 scope = scope,
                 started = SharingStarted.WhileSubscribed(5000),
@@ -53,8 +60,9 @@ internal class DefaultSourcesComponent(
 
 }
 
+@Immutable
 sealed interface SourceUiState {
-    data class Success(val sources: List<NewsSource>) : SourceUiState
+    data class Success(val sources: ImmutableList<NewsSource>) : SourceUiState
     data object Error : SourceUiState
     data object Loading : SourceUiState
 }
@@ -63,6 +71,6 @@ private fun Result<List<NewsSource>>.toSourceUiState(): SourceUiState {
     return when (this) {
         is Result.Loading -> SourceUiState.Loading
         is Result.Error -> SourceUiState.Error
-        is Result.Success -> SourceUiState.Success(data)
+        is Result.Success -> SourceUiState.Success(data.toPersistentList())
     }
 }

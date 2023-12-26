@@ -1,5 +1,6 @@
 package com.rbrauwers.newsapp.headlines
 
+import androidx.compose.runtime.Immutable
 import com.arkivanov.decompose.ComponentContext
 import com.rbrauwers.newsapp.common.Result
 import com.rbrauwers.newsapp.common.asResult
@@ -7,11 +8,16 @@ import com.rbrauwers.newsapp.common.converters.ConvertStringToFormattedDate
 import com.rbrauwers.newsapp.common.coroutineScope
 import com.rbrauwers.newsapp.data.repository.HeadlineRepository
 import com.rbrauwers.newsapp.model.Article
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -34,6 +40,7 @@ internal class DefaultHeadlinesComponent(
 
     override val headlineUiState: StateFlow<HeadlineUiState> =
         produceHeadlineUiState()
+            .flowOn(Dispatchers.IO)
             .stateIn(
                 scope = scope,
                 started = SharingStarted.WhileSubscribed(5000),
@@ -46,6 +53,13 @@ internal class DefaultHeadlinesComponent(
         }
     }
 
+    override fun updateLiked(article: ArticleUi, value: Boolean) {
+        scope.launch {
+            headlineRepository
+                .updateLiked(id = article.id.toLong(), value = value)
+        }
+    }
+
     private fun produceHeadlineUiState(): Flow<HeadlineUiState> {
         return headlineRepository
             .getHeadlines()
@@ -54,17 +68,11 @@ internal class DefaultHeadlinesComponent(
             .map { it.toHeadlineUiState() }
     }
 
-    override fun updateLiked(article: ArticleUi, value: Boolean) {
-        scope.launch {
-            headlineRepository
-                .updateLiked(id = article.id.toLong(), value = value)
-        }
-    }
-
 }
 
+@Immutable
 sealed interface HeadlineUiState {
-    data class Success(val headlines: List<ArticleUi>) : HeadlineUiState
+    data class Success(val headlines: ImmutableList<ArticleUi>) : HeadlineUiState
     data object Error : HeadlineUiState
     data object Loading : HeadlineUiState
 }
@@ -75,7 +83,10 @@ private fun Result<List<Article>>.toHeadlineUiState(): HeadlineUiState {
         is Result.Error -> HeadlineUiState.Error
         is Result.Success -> {
             val converter = ConvertStringToFormattedDate()
-            HeadlineUiState.Success(data.map { it.toArticleUi(converter) })
+            HeadlineUiState.Success(
+                data.map { it.toArticleUi(converter) }
+                    .toPersistentList()
+            )
         }
     }
 }
@@ -86,10 +97,12 @@ private fun Article.toArticleUi(dateConverter: ConvertStringToFormattedDate) = A
     title = title,
     urlToImage = urlToImage,
     url = url,
-    publishedAt = dateConverter(publishedAt),
-    liked = liked
+    publishedAt = publishedAt,
+    liked = liked,
+    dateConverter = dateConverter
 )
 
+@Immutable
 data class ArticleUi(
     val id: Int,
     val author: String?,
@@ -97,5 +110,12 @@ data class ArticleUi(
     val urlToImage: String?,
     val url: String?,
     val publishedAt: String?,
-    val liked: Boolean
-)
+    val liked: Boolean,
+    val dateConverter: ConvertStringToFormattedDate
+) {
+
+    val formattedPublishedAt: String? by lazy {
+        dateConverter(publishedAt)
+    }
+
+}
