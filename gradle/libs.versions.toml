@@ -30,6 +30,7 @@ ktor = "2.3.6"
 logback = "1.4.11"
 napier = "2.6.1"
 sql-delight = "2.0.1"
+touchlab-stately-common = "2.0.6"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
@@ -73,6 +74,7 @@ sql-delight-android-driver = { module = "app.cash.sqldelight:android-driver", ve
 sql-delight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sql-delight" }
 sql-delight-native-driver = { module = "app.cash.sqldelight:native-driver", version.ref = "sql-delight" }
 sql-delight-runtime = { module = "app.cash.sqldelight:runtime", version.ref = "sql-delight" }
+touchlab-stately-common = { module = "co.touchlab:stately-common", version.ref = "touchlab-stately-common" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

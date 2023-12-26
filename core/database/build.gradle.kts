@@ -46,6 +46,10 @@ kotlin {
 
         iosMain.dependencies {
             implementation(libs.sql.delight.native.driver)
+
+            // Needed due a transitive dependency conflict btw SQLDelight and Koin
+            // https://github.com/cashapp/sqldelight/issues/4357
+            implementation(libs.touchlab.stately.common)
         }
     }
 }

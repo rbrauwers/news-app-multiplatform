@@ -31,6 +31,9 @@ class SyncedHeadlineRepository(
             runCatching {
                 val response = networkDataSource.getHeadlines()
 
+                val duplicates = response.articles.groupBy { it.id }.count { it.value.size > 1 }
+                println("DUPLICATES! $duplicates")
+
                 // Saves data in local store regardless if coroutine context was cancelled
                 withContext(NonCancellable) {
                     if (response.status.isOk()) {

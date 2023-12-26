@@ -1,5 +1,6 @@
 package com.rbrauwers.newsapp.headlines
 
+import androidx.compose.runtime.Immutable
 import com.arkivanov.decompose.ComponentContext
 import com.rbrauwers.newsapp.common.Result
 import com.rbrauwers.newsapp.common.asResult
@@ -69,6 +70,7 @@ internal class DefaultHeadlinesComponent(
 
 }
 
+@Immutable
 sealed interface HeadlineUiState {
     data class Success(val headlines: ImmutableList<ArticleUi>) : HeadlineUiState
     data object Error : HeadlineUiState
@@ -100,6 +102,7 @@ private fun Article.toArticleUi(dateConverter: ConvertStringToFormattedDate) = A
     dateConverter = dateConverter
 )
 
+@Immutable
 data class ArticleUi(
     val id: Int,
     val author: String?,

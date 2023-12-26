@@ -25,6 +25,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material3.Card
 import androidx.compose.material3.FilledIconToggleButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -119,7 +120,7 @@ internal fun Headline(
 ) {
     val imageShape = RoundedCornerShape(8.dp)
 
-    Column(
+    Card(
         modifier = Modifier
             .height(216.dp)
             .fillMaxWidth()
@@ -132,7 +133,6 @@ internal fun Headline(
             .clickable {
                 openUrl(url = article.url)
             }
-            .background(MaterialTheme.colorScheme.surfaceVariant)
     ) {
         Row(
             modifier = Modifier.fillMaxSize().padding(24.dp)

@@ -1,5 +1,6 @@
 package com.rbrauwers.newsapp.sources
 
+import androidx.compose.runtime.Immutable
 import com.arkivanov.decompose.ComponentContext
 import com.rbrauwers.newsapp.common.Result
 import com.rbrauwers.newsapp.common.asResult
@@ -59,6 +60,7 @@ internal class DefaultSourcesComponent(
 
 }
 
+@Immutable
 sealed interface SourceUiState {
     data class Success(val sources: ImmutableList<NewsSource>) : SourceUiState
     data object Error : SourceUiState
