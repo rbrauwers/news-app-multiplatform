@@ -31,7 +31,7 @@ interface RootComponent {
     }
 }
 
-class AppRootComponent(
+internal class AppRootComponent(
     componentContext: ComponentContext
 ) : RootComponent, KoinComponent, ComponentContext by componentContext {
 

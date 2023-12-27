@@ -30,10 +30,12 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.arkivanov.decompose.router.stack.backStack
 import com.rbrauwers.newsapp.designsystem.theme.NewsAppTheme
 import com.rbrauwers.newsapp.headlines.HeadlineScreen
 import com.rbrauwers.newsapp.resources.MultiplatformResources
-import com.rbrauwers.newsapp.sources.SourceScreen
+import com.rbrauwers.newsapp.sources.SourcesChildren
+import com.rbrauwers.newsapp.sources.SourcesListScreen
 import components.RootComponent
 import dev.icerock.moko.resources.compose.stringResource
 import info.InfoScreen
@@ -126,7 +128,7 @@ private fun NewsAppChildren(component: RootComponent, modifier: Modifier) {
             }
 
             is RootComponent.NewsAppChild.Sources -> {
-                SourceScreen(component = instance.component)
+                SourcesChildren(component = instance.component)
             }
 
             is RootComponent.NewsAppChild.Info -> {

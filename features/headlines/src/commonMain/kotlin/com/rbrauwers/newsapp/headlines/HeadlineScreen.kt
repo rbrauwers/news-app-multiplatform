@@ -46,20 +46,25 @@ import io.kamel.image.asyncPainterResource
 import openUrl
 
 @Composable
-fun HeadlineScreen(component: HeadlinesComponent) {
+fun HeadlineScreen(
+    component: HeadlinesComponent,
+    modifier: Modifier = Modifier
+) {
     val uiState: HeadlineUiState by component.headlineUiState.collectAsState()
     HeadlineScreenContent(
         uiState = uiState,
         onLikedChanged = { article, liked ->
             component.updateLiked(article = article, liked)
-        }
+        },
+        modifier = modifier
     )
 }
 
 @Composable
 private fun HeadlineScreenContent(
     uiState: HeadlineUiState,
-    onLikedChanged: (ArticleUi, Boolean) -> Unit
+    onLikedChanged: (ArticleUi, Boolean) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     when (uiState) {
         is HeadlineUiState.Error -> {
@@ -71,7 +76,11 @@ private fun HeadlineScreenContent(
         }
 
         is HeadlineUiState.Success -> {
-            HeadlinesList(uiState = uiState, onLikedChanged = onLikedChanged)
+            HeadlinesList(
+                uiState = uiState,
+                onLikedChanged = onLikedChanged,
+                modifier = modifier
+            )
         }
     }
 }
@@ -80,12 +89,14 @@ private fun HeadlineScreenContent(
 private fun HeadlinesList(
     listState: LazyListState = rememberLazyListState(),
     uiState: HeadlineUiState.Success,
-    onLikedChanged: (ArticleUi, Boolean) -> Unit
+    onLikedChanged: (ArticleUi, Boolean) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     LazyColumn(
         state = listState,
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
+        verticalArrangement = Arrangement.Top,
+        modifier = modifier
     ) {
         headlines(
             headlines = uiState.headlines,

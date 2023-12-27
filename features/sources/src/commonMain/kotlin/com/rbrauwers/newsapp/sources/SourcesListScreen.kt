@@ -1,6 +1,7 @@
 package com.rbrauwers.newsapp.sources
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,41 +30,66 @@ import com.rbrauwers.newsapp.designsystem.NewsAppDefaultProgressIndicator
 import com.rbrauwers.newsapp.model.NewsSource
 
 @Composable
-fun SourceScreen(component: SourcesComponent) {
-    val uiState: SourceUiState by component.sourceUiState.collectAsState()
-    SourcesScreenContent(uiState = uiState)
+fun SourcesListScreen(
+    component: SourcesListComponent,
+    onNavigateToSource: (NewsSource) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val uiState: SourcesUiState by component.sourcesUiState.collectAsState()
+    SourcesListScreenContent(
+        uiState = uiState,
+        modifier = modifier,
+        onNavigateToSource = onNavigateToSource
+    )
 }
 
 @Composable
-private fun SourcesScreenContent(
-    uiState: SourceUiState
+private fun SourcesListScreenContent(
+    uiState: SourcesUiState,
+    onNavigateToSource: (NewsSource) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     when (uiState) {
-        is SourceUiState.Error -> {
+        is SourcesUiState.Error -> {
             // TODO
         }
 
-        is SourceUiState.Loading -> {
+        is SourcesUiState.Loading -> {
             NewsAppDefaultProgressIndicator(placeOnCenter = true)
         }
 
-        is SourceUiState.Success -> {
-            SourcesList(uiState)
+        is SourcesUiState.Success -> {
+            SourcesList(
+                uiState = uiState,
+                modifier = modifier,
+                onNavigateToSource = onNavigateToSource
+            )
         }
     }
 }
 
 @Composable
-private fun SourcesList(uiState: SourceUiState.Success) {
+private fun SourcesList(
+    uiState: SourcesUiState.Success,
+    onNavigateToSource: (NewsSource) -> Unit,
+    modifier: Modifier = Modifier
+) {
     LazyColumn(
         state = rememberLazyListState(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    )  {
-        sources(sources = uiState.sources)
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+    ) {
+        sources(
+            sources = uiState.sources,
+            onNavigateToSource = onNavigateToSource
+        )
     }
 }
 
-private fun LazyListScope.sources(sources: List<NewsSource>) {
+private fun LazyListScope.sources(
+    sources: List<NewsSource>,
+    onNavigateToSource: (NewsSource) -> Unit,
+) {
     itemsIndexed(
         items = sources,
         key = { _, source -> source.id }
@@ -71,7 +97,10 @@ private fun LazyListScope.sources(sources: List<NewsSource>) {
         Row(
             modifier = Modifier
                 .padding(16.dp)
-                .background(MaterialTheme.colorScheme.surface),
+                .background(MaterialTheme.colorScheme.surface)
+                .clickable {
+                    onNavigateToSource(source)
+                },
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.weight(1f)) {
