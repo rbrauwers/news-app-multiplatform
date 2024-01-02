@@ -31,6 +31,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -40,26 +41,62 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.rbrauwers.newsapp.designsystem.BadgedTopBar
+import com.rbrauwers.newsapp.designsystem.BottomBarState
+import com.rbrauwers.newsapp.designsystem.InfoActionButton
+import com.rbrauwers.newsapp.designsystem.LocalAppState
 import com.rbrauwers.newsapp.designsystem.NewsAppDefaultProgressIndicator
+import com.rbrauwers.newsapp.designsystem.SettingsActionButton
+import com.rbrauwers.newsapp.designsystem.TopBarState
+import com.rbrauwers.newsapp.resources.MultiplatformResources
+import dev.icerock.moko.resources.compose.stringResource
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import openUrl
 
 @Composable
-fun HeadlineScreen(component: HeadlinesComponent) {
+fun HeadlineScreen(
+    component: HeadlinesComponent,
+    onNavigateToInfo: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     val uiState: HeadlineUiState by component.headlineUiState.collectAsState()
+
+    LocalAppState.current.apply {
+        LaunchedEffect(uiState) {
+            setTopBarState(
+                topBarState = TopBarState(
+                    title = {
+                        BadgedTopBar(
+                            title = stringResource(MultiplatformResources.strings.headlines),
+                            count = (uiState as? HeadlineUiState.Success)?.headlines?.size
+                        )
+                    },
+                    actions = {
+                        InfoActionButton(onClick = onNavigateToInfo)
+                        //SettingsActionButton(onClick = {  })
+                    }
+                )
+            )
+
+            setBottomBarState(bottomBarState = BottomBarState(isVisible = true))
+        }
+    }
+
     HeadlineScreenContent(
         uiState = uiState,
         onLikedChanged = { article, liked ->
             component.updateLiked(article = article, liked)
-        }
+        },
+        modifier = modifier
     )
 }
 
 @Composable
 private fun HeadlineScreenContent(
     uiState: HeadlineUiState,
-    onLikedChanged: (ArticleUi, Boolean) -> Unit
+    onLikedChanged: (ArticleUi, Boolean) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     when (uiState) {
         is HeadlineUiState.Error -> {
@@ -71,7 +108,11 @@ private fun HeadlineScreenContent(
         }
 
         is HeadlineUiState.Success -> {
-            HeadlinesList(uiState = uiState, onLikedChanged = onLikedChanged)
+            HeadlinesList(
+                uiState = uiState,
+                onLikedChanged = onLikedChanged,
+                modifier = modifier
+            )
         }
     }
 }
@@ -80,12 +121,14 @@ private fun HeadlineScreenContent(
 private fun HeadlinesList(
     listState: LazyListState = rememberLazyListState(),
     uiState: HeadlineUiState.Success,
-    onLikedChanged: (ArticleUi, Boolean) -> Unit
+    onLikedChanged: (ArticleUi, Boolean) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     LazyColumn(
         state = listState,
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
+        verticalArrangement = Arrangement.Top,
+        modifier = modifier
     ) {
         headlines(
             headlines = uiState.headlines,

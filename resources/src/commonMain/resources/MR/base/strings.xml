@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resources>
+    <string name="app_info">App info</string>
     <string name="headlines">Headlines</string>
     <string name="sources">Sources</string>
-    <string name="app_info">App info</string>
+    <string name="source_details">Source details</string>
 </resources>

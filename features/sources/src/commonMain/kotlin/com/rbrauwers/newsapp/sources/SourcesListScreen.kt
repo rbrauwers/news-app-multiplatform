@@ -1,6 +1,7 @@
 package com.rbrauwers.newsapp.sources
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,51 +20,107 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.rbrauwers.newsapp.designsystem.BadgedTopBar
+import com.rbrauwers.newsapp.designsystem.BottomBarState
+import com.rbrauwers.newsapp.designsystem.InfoActionButton
+import com.rbrauwers.newsapp.designsystem.LocalAppState
 import com.rbrauwers.newsapp.designsystem.NewsAppDefaultProgressIndicator
+import com.rbrauwers.newsapp.designsystem.SettingsActionButton
+import com.rbrauwers.newsapp.designsystem.TopBarState
 import com.rbrauwers.newsapp.model.NewsSource
+import com.rbrauwers.newsapp.resources.MultiplatformResources
+import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
-fun SourceScreen(component: SourcesComponent) {
-    val uiState: SourceUiState by component.sourceUiState.collectAsState()
-    SourcesScreenContent(uiState = uiState)
+fun SourcesListScreen(
+    component: SourcesListComponent,
+    onNavigateToInfo: () -> Unit,
+    onNavigateToSource: (NewsSource) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val uiState: SourcesUiState by component.sourcesUiState.collectAsState()
+
+    LocalAppState.current.apply {
+        LaunchedEffect(uiState) {
+            setTopBarState(
+                topBarState = TopBarState(
+                    title = {
+                        BadgedTopBar(
+                            title = stringResource(MultiplatformResources.strings.sources),
+                            count = (uiState as? SourcesUiState.Success)?.sources?.size
+                        )
+                    },
+                    actions =  {
+                        InfoActionButton(onClick = onNavigateToInfo)
+                        //SettingsActionButton(onClick = onNavigateToSettings)
+                    }
+                )
+            )
+            setBottomBarState(bottomBarState = BottomBarState(isVisible = true))
+        }
+    }
+
+    SourcesListScreenContent(
+        uiState = uiState,
+        modifier = modifier,
+        onNavigateToSource = onNavigateToSource
+    )
 }
 
 @Composable
-private fun SourcesScreenContent(
-    uiState: SourceUiState
+private fun SourcesListScreenContent(
+    uiState: SourcesUiState,
+    onNavigateToSource: (NewsSource) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     when (uiState) {
-        is SourceUiState.Error -> {
+        is SourcesUiState.Error -> {
             // TODO
         }
 
-        is SourceUiState.Loading -> {
+        is SourcesUiState.Loading -> {
             NewsAppDefaultProgressIndicator(placeOnCenter = true)
         }
 
-        is SourceUiState.Success -> {
-            SourcesList(uiState)
+        is SourcesUiState.Success -> {
+            SourcesList(
+                uiState = uiState,
+                modifier = modifier,
+                onNavigateToSource = onNavigateToSource
+            )
         }
     }
 }
 
 @Composable
-private fun SourcesList(uiState: SourceUiState.Success) {
+private fun SourcesList(
+    uiState: SourcesUiState.Success,
+    onNavigateToSource: (NewsSource) -> Unit,
+    modifier: Modifier = Modifier
+) {
     LazyColumn(
         state = rememberLazyListState(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    )  {
-        sources(sources = uiState.sources)
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+    ) {
+        sources(
+            sources = uiState.sources,
+            onNavigateToSource = onNavigateToSource
+        )
     }
 }
 
-private fun LazyListScope.sources(sources: List<NewsSource>) {
+private fun LazyListScope.sources(
+    sources: List<NewsSource>,
+    onNavigateToSource: (NewsSource) -> Unit,
+) {
     itemsIndexed(
         items = sources,
         key = { _, source -> source.id }
@@ -71,7 +128,10 @@ private fun LazyListScope.sources(sources: List<NewsSource>) {
         Row(
             modifier = Modifier
                 .padding(16.dp)
-                .background(MaterialTheme.colorScheme.surface),
+                .background(MaterialTheme.colorScheme.surface)
+                .clickable {
+                    onNavigateToSource(source)
+                },
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.weight(1f)) {

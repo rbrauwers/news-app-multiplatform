@@ -1,76 +1,104 @@
 package com.rbrauwers.newsapp.sources
 
-import androidx.compose.runtime.Immutable
 import com.arkivanov.decompose.ComponentContext
-import com.rbrauwers.newsapp.common.Result
-import com.rbrauwers.newsapp.common.asResult
-import com.rbrauwers.newsapp.common.coroutineScope
-import com.rbrauwers.newsapp.data.repository.SourceRepository
+import com.arkivanov.decompose.router.stack.ChildStack
+import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.bringToFront
+import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.pop
+import com.arkivanov.decompose.value.Value
 import com.rbrauwers.newsapp.model.NewsSource
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
+import kotlinx.serialization.Serializable
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
+import org.koin.core.parameter.parametersOf
 
 interface SourcesComponent {
-    val sourceUiState: StateFlow<SourceUiState>
+    val stack: Value<ChildStack<*, SourcesChild>>
+    val onNavigateToInfo: () -> Unit
+
+    fun onNavigateBack()
+    fun onNavigateToSource(source: NewsSource)
+
+    sealed class SourcesChild {
+        data class SourcesList(val component: SourcesListComponent) : SourcesChild()
+        data class SourceDetail(val component: SourceDetailComponent) : SourcesChild()
+    }
 }
 
 internal class DefaultSourcesComponent(
     componentContext: ComponentContext,
-    mainContext: CoroutineContext,
-    private val sourceRepository: SourceRepository
-) : SourcesComponent, ComponentContext by componentContext {
+    override val onNavigateToInfo: () -> Unit
+) : SourcesComponent, KoinComponent, ComponentContext by componentContext {
 
-    // The scope is automatically cancelled when the component is destroyed
-    private val scope = coroutineScope(mainContext + SupervisorJob())
+    private val navigation = StackNavigation<Config>()
 
-    override val sourceUiState: StateFlow<SourceUiState> =
-        produceSourceUiState()
-            .flowOn(Dispatchers.IO)
-            .stateIn(
-                scope = scope,
-                started = SharingStarted.WhileSubscribed(5000),
-                initialValue = SourceUiState.Loading
-            )
+    override val stack: Value<ChildStack<*, SourcesComponent.SourcesChild>> =
+        childStack(
+            source = navigation,
+            serializer = Config.serializer(),
+            initialConfiguration = Config.SourcesList,
+            handleBackButton = true,
+            childFactory = ::child,
+        )
 
-    init {
-        scope.launch {
-            sourceRepository.sync()
+    override fun onNavigateBack() {
+        navigation.pop()
+    }
+
+    override fun onNavigateToSource(source: NewsSource) {
+        navigation.bringToFront(Config.SourceDetail(source = source))
+    }
+
+    private fun child(
+        config: Config,
+        componentContext: ComponentContext
+    ): SourcesComponent.SourcesChild {
+        return when (config) {
+            is Config.SourcesList -> {
+                SourcesComponent.SourcesChild.SourcesList(
+                    component = sourcesList(
+                        componentContext = componentContext
+                    )
+                )
+            }
+
+            is Config.SourceDetail -> {
+                SourcesComponent.SourcesChild.SourceDetail(
+                    component = sourceDetail(
+                        componentContext = componentContext,
+                        source = config.source
+                    )
+                )
+            }
         }
     }
 
-    private fun produceSourceUiState(): Flow<SourceUiState> {
-        return sourceRepository
-            .getSources()
-            .filterNotNull()
-            .asResult()
-            .map { it.toSourceUiState() }
+    @Serializable
+    private sealed interface Config {
+        @Serializable
+        data object SourcesList : Config
+
+        @Serializable
+        data class SourceDetail(val source: NewsSource) : Config
     }
 
 }
 
-@Immutable
-sealed interface SourceUiState {
-    data class Success(val sources: ImmutableList<NewsSource>) : SourceUiState
-    data object Error : SourceUiState
-    data object Loading : SourceUiState
+private fun DefaultSourcesComponent.sourcesList(
+    componentContext: ComponentContext
+): SourcesListComponent {
+    return get(parameters = {
+        parametersOf(componentContext, Dispatchers.Main)
+    })
 }
 
-private fun Result<List<NewsSource>>.toSourceUiState(): SourceUiState {
-    return when (this) {
-        is Result.Loading -> SourceUiState.Loading
-        is Result.Error -> SourceUiState.Error
-        is Result.Success -> SourceUiState.Success(data.toPersistentList())
-    }
+private fun DefaultSourcesComponent.sourceDetail(
+    componentContext: ComponentContext,
+    source: NewsSource
+): SourceDetailComponent {
+    return get(parameters = {
+        parametersOf(componentContext, source)
+    })
 }
