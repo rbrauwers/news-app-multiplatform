@@ -13,5 +13,5 @@ data class Article(
     val content: String?,
     val liked: Boolean = false,
     // Artificial ID since it is missing on API
-    val id: Int = (author+title+description+url+urlToImage+publishedAt+content).hashCode()
+    val id: Int = (author.orEmpty() + title.orEmpty() + description.orEmpty() + url.orEmpty() + urlToImage.orEmpty() + publishedAt.orEmpty() + content.orEmpty()).hashCode()
 )

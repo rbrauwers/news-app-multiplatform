@@ -42,7 +42,7 @@ internal class AppRootComponent(
             serializer = Config.serializer(),
             initialConfiguration = Config.Headlines,
             handleBackButton = true,
-            childFactory = ::child,
+            childFactory = ::child
         )
 
     override fun onNavigateBack() {
