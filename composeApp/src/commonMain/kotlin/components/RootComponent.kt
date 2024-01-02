@@ -6,7 +6,6 @@ import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
-import com.arkivanov.decompose.router.stack.popTo
 import com.arkivanov.decompose.value.Value
 import com.rbrauwers.newsapp.headlines.HeadlinesComponent
 import com.rbrauwers.newsapp.sources.SourcesComponent
@@ -19,10 +18,10 @@ import org.koin.core.parameter.parametersOf
 interface RootComponent {
     val stack: Value<ChildStack<*, NewsAppChild>>
 
-    fun onBackClicked()
-    fun onHeadlinesTabClicked()
-    fun onSourcesTabClicked()
-    fun onInfoClicked()
+    fun onNavigateBack()
+    fun onNavigateToHeadlines()
+    fun onNavigateToSources()
+    fun onNavigateToInfo()
 
     sealed class NewsAppChild {
         class Headlines(val component: HeadlinesComponent) : NewsAppChild()
@@ -46,19 +45,19 @@ internal class AppRootComponent(
             childFactory = ::child,
         )
 
-    override fun onBackClicked() {
+    override fun onNavigateBack() {
         navigation.pop()
     }
 
-    override fun onHeadlinesTabClicked() {
+    override fun onNavigateToHeadlines() {
         navigation.bringToFront(Config.Headlines)
     }
 
-    override fun onSourcesTabClicked() {
+    override fun onNavigateToSources() {
         navigation.bringToFront(Config.Sources)
     }
 
-    override fun onInfoClicked() {
+    override fun onNavigateToInfo() {
         navigation.bringToFront(Config.Info)
     }
 
@@ -103,6 +102,6 @@ private fun AppRootComponent.sourcesComponent(
     componentContext: ComponentContext
 ): SourcesComponent {
     return get(parameters = {
-        parametersOf(componentContext, Dispatchers.Main)
+        parametersOf(componentContext, this::onNavigateToInfo)
     })
 }

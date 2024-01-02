@@ -15,7 +15,8 @@ val sourceModule = module {
 
     factory { params ->
         DefaultSourcesComponent(
-            componentContext = params.get()
+            componentContext = params.get(),
+            onNavigateToInfo = params.get()
         )
     } bind SourcesComponent::class
 

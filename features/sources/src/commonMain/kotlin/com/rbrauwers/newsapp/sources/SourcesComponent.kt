@@ -5,6 +5,7 @@ import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.value.Value
 import com.rbrauwers.newsapp.model.NewsSource
 import kotlinx.coroutines.Dispatchers
@@ -15,7 +16,9 @@ import org.koin.core.parameter.parametersOf
 
 interface SourcesComponent {
     val stack: Value<ChildStack<*, SourcesChild>>
+    val onNavigateToInfo: () -> Unit
 
+    fun onNavigateBack()
     fun onNavigateToSource(source: NewsSource)
 
     sealed class SourcesChild {
@@ -25,7 +28,8 @@ interface SourcesComponent {
 }
 
 internal class DefaultSourcesComponent(
-    componentContext: ComponentContext
+    componentContext: ComponentContext,
+    override val onNavigateToInfo: () -> Unit
 ) : SourcesComponent, KoinComponent, ComponentContext by componentContext {
 
     private val navigation = StackNavigation<Config>()
@@ -38,6 +42,10 @@ internal class DefaultSourcesComponent(
             handleBackButton = true,
             childFactory = ::child,
         )
+
+    override fun onNavigateBack() {
+        navigation.pop()
+    }
 
     override fun onNavigateToSource(source: NewsSource) {
         navigation.bringToFront(Config.SourceDetail(source = source))

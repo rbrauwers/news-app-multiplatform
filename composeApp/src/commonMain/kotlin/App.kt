@@ -6,15 +6,11 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -22,6 +18,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -30,12 +28,13 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
-import com.arkivanov.decompose.router.stack.backStack
+import com.rbrauwers.newsapp.designsystem.AppState
+import com.rbrauwers.newsapp.designsystem.LocalAppState
+import com.rbrauwers.newsapp.designsystem.TopBarState
 import com.rbrauwers.newsapp.designsystem.theme.NewsAppTheme
 import com.rbrauwers.newsapp.headlines.HeadlineScreen
 import com.rbrauwers.newsapp.resources.MultiplatformResources
 import com.rbrauwers.newsapp.sources.SourcesChildren
-import com.rbrauwers.newsapp.sources.SourcesListScreen
 import components.RootComponent
 import dev.icerock.moko.resources.compose.stringResource
 import info.InfoScreen
@@ -43,75 +42,43 @@ import info.InfoScreen
 @Composable
 fun App(component: RootComponent, modifier: Modifier = Modifier) {
     val childStack by component.stack.subscribeAsState()
-    val childUiState = childStack.active.instance.uiState()
     val activeChild = childStack.active.instance
 
-    NewsAppTheme {
-        Scaffold(
-            topBar = {
-                NewsAppTopBar(
+    CompositionLocalProvider(LocalAppState provides AppState()) {
+        NewsAppTheme {
+            Scaffold(
+                topBar = {
+                    NewsAppTopBar()
+                },
+                bottomBar = {
+                    NewsAppBottomBar(
+                        component = component,
+                        activeChild = activeChild
+                    )
+                },
+                modifier = modifier
+            ) {
+                NewsAppChildren(
                     component = component,
-                    childUiState = childUiState
+                    modifier = Modifier.padding(it)
                 )
-            },
-            bottomBar = {
-                NewsAppBottomBar(
-                    component = component,
-                    childUiState = childUiState,
-                    activeChild = activeChild
-                )
-            },
-            modifier = modifier
-        ) {
-            NewsAppChildren(
-                component = component,
-                modifier = Modifier.padding(it)
-            )
+            }
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun NewsAppTopBar(
-    component: RootComponent,
-    childUiState: ChildUIState
-) {
+private fun NewsAppTopBar() {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    val topBarState: TopBarState by LocalAppState.current.topBarStateFlow.collectAsState()
 
     CenterAlignedTopAppBar(
-        title = {
-            Text(
-                text = childUiState.title,
-                style = MaterialTheme.typography.titleLarge
-            )
-        },
-        actions = {
-            if (childUiState.hasNavigationActions) {
-                IconButton(
-                    onClick = {
-                        component.onInfoClicked()
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Info,
-                        contentDescription = null
-                    )
-                }
-            }
-        },
-        navigationIcon = {
-            if (childUiState.isBackButtonVisible) {
-                IconButton(onClick = { component.onBackClicked() }) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = null
-                    )
-                }
-            }
-        },
+        title = topBarState.title ?: { },
         scrollBehavior = scrollBehavior,
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        actions = topBarState.actions ?: { },
+        navigationIcon = topBarState.navigationIcon ?: { },
     )
 }
 
@@ -124,7 +91,10 @@ private fun NewsAppChildren(component: RootComponent, modifier: Modifier) {
     ) { child ->
         when (val instance = child.instance) {
             is RootComponent.NewsAppChild.Headlines -> {
-                HeadlineScreen(component = instance.component)
+                HeadlineScreen(
+                    component = instance.component,
+                    onNavigateToInfo = component::onNavigateToInfo
+                )
             }
 
             is RootComponent.NewsAppChild.Sources -> {
@@ -132,7 +102,7 @@ private fun NewsAppChildren(component: RootComponent, modifier: Modifier) {
             }
 
             is RootComponent.NewsAppChild.Info -> {
-                InfoScreen()
+                InfoScreen(onNavigateBack = component::onNavigateBack)
             }
         }
     }
@@ -141,12 +111,13 @@ private fun NewsAppChildren(component: RootComponent, modifier: Modifier) {
 @Composable
 private fun NewsAppBottomBar(
     component: RootComponent,
-    childUiState: ChildUIState,
     activeChild: RootComponent.NewsAppChild,
     modifier: Modifier = Modifier
 ) {
+    val bottomBarState = LocalAppState.current.bottomBarStateFlow.collectAsState()
+
     AnimatedVisibility(
-        visible = childUiState.isBottomBarVisible,
+        visible = bottomBarState.value.isVisible,
         enter = fadeIn() + slideInVertically(initialOffsetY = { fullHeight -> fullHeight/2 }),
         exit = fadeOut() + slideOutVertically(targetOffsetY = { fullHeight -> fullHeight/2 })
     ) {
@@ -160,13 +131,13 @@ private fun NewsAppBottomBar(
 @Composable
 private fun RowScope.HeadlinesBarItem(component: RootComponent, activeChild: RootComponent.NewsAppChild) {
     val uiState = ChildUIState.Headlines(isSelected = activeChild is RootComponent.NewsAppChild.Headlines)
-    NewsBarItem(uiState = uiState, onClick = component::onHeadlinesTabClicked)
+    NewsBarItem(uiState = uiState, onClick = component::onNavigateToHeadlines)
 }
 
 @Composable
 private fun RowScope.SourcesBarItem(component: RootComponent, activeChild: RootComponent.NewsAppChild) {
     val uiState = ChildUIState.Sources(isSelected = activeChild is RootComponent.NewsAppChild.Sources)
-    NewsBarItem(uiState = uiState, onClick = component::onSourcesTabClicked)
+    NewsBarItem(uiState = uiState, onClick = component::onNavigateToSources)
 }
 
 @Composable
@@ -186,22 +157,6 @@ private fun RowScope.NewsBarItem(uiState: ChildUIState, onClick: () -> Unit) {
             Text(uiState.title)
         }
     )
-}
-
-private fun RootComponent.NewsAppChild.uiState(): ChildUIState {
-    return when (this) {
-        is RootComponent.NewsAppChild.Headlines -> {
-            ChildUIState.Headlines()
-        }
-
-        is RootComponent.NewsAppChild.Sources -> {
-            ChildUIState.Sources()
-        }
-
-        is RootComponent.NewsAppChild.Info -> {
-            ChildUIState.Info()
-        }
-    }
 }
 
 private sealed interface ChildUIState {

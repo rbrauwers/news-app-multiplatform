@@ -16,8 +16,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.rbrauwers.newsapp.designsystem.BackNavigationIcon
+import com.rbrauwers.newsapp.designsystem.BottomBarState
+import com.rbrauwers.newsapp.designsystem.LocalAppState
+import com.rbrauwers.newsapp.designsystem.NewsDefaultTopBar
+import com.rbrauwers.newsapp.designsystem.TopBarState
+import com.rbrauwers.newsapp.resources.MultiplatformResources
+import dev.icerock.moko.resources.compose.stringResource
 import openUrl
 
 private data class Lib(
@@ -37,7 +45,23 @@ private val libs = listOf(
 )
 
 @Composable
-internal fun InfoScreen() {
+internal fun InfoScreen(
+    onNavigateBack: () -> Unit
+) {
+    LocalAppState.current.apply {
+        LaunchedEffect(Unit) {
+            setTopBarState(
+                topBarState = TopBarState(
+                    title = { NewsDefaultTopBar(title = stringResource(MultiplatformResources.strings.app_info)) },
+                    navigationIcon = {
+                        BackNavigationIcon(onBackClick = onNavigateBack)
+                    }
+                )
+            )
+            setBottomBarState(bottomBarState = BottomBarState(isVisible = false))
+        }
+    }
+
     InfoScreenContent(modifier = Modifier.fillMaxSize())
 }
 
@@ -46,7 +70,10 @@ private fun InfoScreenContent(modifier: Modifier = Modifier) {
     Surface(modifier = modifier) {
         LazyColumn(modifier = Modifier.padding(16.dp)) {
             item {
-                Text(text = "Libraries and frameworks", style = MaterialTheme.typography.headlineSmall)
+                Text(
+                    text = "Libraries and frameworks",
+                    style = MaterialTheme.typography.headlineSmall
+                )
                 Spacer(modifier = Modifier.height(4.dp))
                 Divider(modifier = Modifier.height(2.dp))
                 Spacer(modifier = Modifier.height(4.dp))

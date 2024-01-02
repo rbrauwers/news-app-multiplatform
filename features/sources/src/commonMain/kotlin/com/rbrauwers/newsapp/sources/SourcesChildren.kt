@@ -17,6 +17,7 @@ fun SourcesChildren(component: SourcesComponent, modifier: Modifier = Modifier) 
             is SourcesComponent.SourcesChild.SourcesList -> {
                 SourcesListScreen(
                     component = child.component,
+                    onNavigateToInfo = component.onNavigateToInfo,
                     onNavigateToSource = component::onNavigateToSource,
                     modifier = modifier
                 )
@@ -25,6 +26,7 @@ fun SourcesChildren(component: SourcesComponent, modifier: Modifier = Modifier) 
             is SourcesComponent.SourcesChild.SourceDetail -> {
                 SourceDetailScreen(
                     component = child.component,
+                    onNavigateBack = component::onNavigateBack,
                     modifier = modifier
                 )
             }
