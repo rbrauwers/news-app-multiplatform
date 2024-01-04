@@ -38,6 +38,7 @@ import com.rbrauwers.newsapp.sources.SourcesChildren
 import components.RootComponent
 import dev.icerock.moko.resources.compose.stringResource
 import info.InfoScreen
+import settings.SettingsScreen
 
 @Composable
 fun App(component: RootComponent, modifier: Modifier = Modifier) {
@@ -93,7 +94,8 @@ private fun NewsAppChildren(component: RootComponent, modifier: Modifier) {
             is RootComponent.NewsAppChild.Headlines -> {
                 HeadlineScreen(
                     component = instance.component,
-                    onNavigateToInfo = component::onNavigateToInfo
+                    onNavigateToInfo = component::onNavigateToInfo,
+                    onNavigateToSettings = component::onNavigateToSettings
                 )
             }
 
@@ -103,6 +105,13 @@ private fun NewsAppChildren(component: RootComponent, modifier: Modifier) {
 
             is RootComponent.NewsAppChild.Info -> {
                 InfoScreen(onNavigateBack = component::onNavigateBack)
+            }
+
+            is RootComponent.NewsAppChild.Settings -> {
+                SettingsScreen(
+                    component = instance.component,
+                    onNavigateBack = component::onNavigateBack
+                )
             }
         }
     }
@@ -191,15 +200,5 @@ private sealed interface ChildUIState {
         override val isBottomBarVisible: Boolean = true
         override val hasNavigationActions: Boolean = true
         override val isBackButtonVisible: Boolean = false
-    }
-
-    data class Info(override val isSelected: Boolean? = null) : ChildUIState {
-        override val title: String
-            @Composable get() = stringResource(MultiplatformResources.strings.app_info)
-
-        override val icon: ImageVector? = null
-        override val isBottomBarVisible: Boolean = false
-        override val hasNavigationActions: Boolean = false
-        override val isBackButtonVisible: Boolean = true
     }
 }

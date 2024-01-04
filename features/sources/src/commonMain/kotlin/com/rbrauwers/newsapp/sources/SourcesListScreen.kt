@@ -42,6 +42,7 @@ import dev.icerock.moko.resources.compose.stringResource
 fun SourcesListScreen(
     component: SourcesListComponent,
     onNavigateToInfo: () -> Unit,
+    onNavigateToSettings: () -> Unit,
     onNavigateToSource: (NewsSource) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -59,7 +60,7 @@ fun SourcesListScreen(
                     },
                     actions =  {
                         InfoActionButton(onClick = onNavigateToInfo)
-                        //SettingsActionButton(onClick = onNavigateToSettings)
+                        SettingsActionButton(onClick = onNavigateToSettings)
                     }
                 )
             )

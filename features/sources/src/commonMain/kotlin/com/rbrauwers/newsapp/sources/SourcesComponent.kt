@@ -17,6 +17,7 @@ import org.koin.core.parameter.parametersOf
 interface SourcesComponent {
     val stack: Value<ChildStack<*, SourcesChild>>
     val onNavigateToInfo: () -> Unit
+    val onNavigateToSettings: () -> Unit
 
     fun onNavigateBack()
     fun onNavigateToSource(source: NewsSource)
@@ -29,7 +30,8 @@ interface SourcesComponent {
 
 internal class DefaultSourcesComponent(
     componentContext: ComponentContext,
-    override val onNavigateToInfo: () -> Unit
+    override val onNavigateToInfo: () -> Unit,
+    override val onNavigateToSettings: () -> Unit
 ) : SourcesComponent, KoinComponent, ComponentContext by componentContext {
 
     private val navigation = StackNavigation<Config>()

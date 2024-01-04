@@ -14,6 +14,7 @@ import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.parameter.parametersOf
+import settings.SettingsComponent
 
 interface RootComponent {
     val stack: Value<ChildStack<*, NewsAppChild>>
@@ -22,11 +23,13 @@ interface RootComponent {
     fun onNavigateToHeadlines()
     fun onNavigateToSources()
     fun onNavigateToInfo()
+    fun onNavigateToSettings()
 
     sealed class NewsAppChild {
         class Headlines(val component: HeadlinesComponent) : NewsAppChild()
         class Sources(val component: SourcesComponent) : NewsAppChild()
-        data object Info : NewsAppChild()
+        internal class Settings(val component: SettingsComponent) : NewsAppChild()
+        internal data object Info : NewsAppChild()
     }
 }
 
@@ -61,6 +64,10 @@ internal class AppRootComponent(
         navigation.bringToFront(Config.Info)
     }
 
+    override fun onNavigateToSettings() {
+        navigation.bringToFront(Config.Settings)
+    }
+
     private fun child(config: Config, componentContext: ComponentContext): RootComponent.NewsAppChild {
         return when (config) {
             is Config.Headlines -> {
@@ -73,6 +80,10 @@ internal class AppRootComponent(
 
             is Config.Info -> {
                 RootComponent.NewsAppChild.Info
+            }
+
+            is Config.Settings -> {
+                RootComponent.NewsAppChild.Settings(settingsComponent(componentContext = componentContext))
             }
         }
     }
@@ -87,6 +98,9 @@ internal class AppRootComponent(
 
         @Serializable
         data object Info : Config
+
+        @Serializable
+        data object Settings : Config
     }
 }
 
@@ -102,6 +116,14 @@ private fun AppRootComponent.sourcesComponent(
     componentContext: ComponentContext
 ): SourcesComponent {
     return get(parameters = {
-        parametersOf(componentContext, this::onNavigateToInfo)
+        parametersOf(componentContext, this::onNavigateToInfo, this::onNavigateToSettings)
+    })
+}
+
+private fun AppRootComponent.settingsComponent(
+    componentContext: ComponentContext
+): SettingsComponent {
+    return get(parameters = {
+        parametersOf(componentContext, Dispatchers.Main)
     })
 }
