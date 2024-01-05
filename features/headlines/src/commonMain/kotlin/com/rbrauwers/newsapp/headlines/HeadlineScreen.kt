@@ -58,6 +58,7 @@ import openUrl
 fun HeadlineScreen(
     component: HeadlinesComponent,
     onNavigateToInfo: () -> Unit,
+    onNavigateToSettings: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val uiState: HeadlineUiState by component.headlineUiState.collectAsState()
@@ -74,7 +75,7 @@ fun HeadlineScreen(
                     },
                     actions = {
                         InfoActionButton(onClick = onNavigateToInfo)
-                        //SettingsActionButton(onClick = {  })
+                        SettingsActionButton(onClick = onNavigateToSettings)
                     }
                 )
             )

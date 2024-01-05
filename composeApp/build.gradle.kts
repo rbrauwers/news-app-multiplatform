@@ -55,12 +55,14 @@ kotlin {
             implementation(libs.koin.compose)
             implementation(libs.koin.core)
 
+            implementation(libs.icerock.moko.biometry.compose)
             implementation(libs.icerock.moko.resources)
             implementation(libs.icerock.moko.resources.compose)
 
             implementation(libs.decompose)
             implementation(libs.decompose.extensions)
 
+            implementation(project(":core:auth"))
             implementation(project(":core:common"))
             implementation(project(":core:designsystem"))
             implementation(project(":core:model"))

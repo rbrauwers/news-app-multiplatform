@@ -7,8 +7,10 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 actual class DatabaseDriverFactory actual constructor(): KoinComponent {
+
     actual fun createDriver(): SqlDriver {
         val context: Context by inject()
         return AndroidSqliteDriver(NewsMultiplatformDatabase.Schema, context, "news-multiplatform.db")
     }
+
 }
