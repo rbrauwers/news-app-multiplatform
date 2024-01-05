@@ -9,3 +9,10 @@ expect fun BiometryAuthenticator.prepare(): BiometryAuthenticator
 
 @Composable
 expect fun rememberBiometryAuthenticator(factory: BiometryAuthenticatorFactory): BiometryAuthenticator
+
+expect class PlatformBiometricAuthenticatorSpecs
+
+expect class PlatformBiometricAuthenticator() : PropertyBiometricAuthenticator
+
+@Composable
+expect fun rememberPlatformBiometricAuthenticatorSpecs(): PlatformBiometricAuthenticatorSpecs

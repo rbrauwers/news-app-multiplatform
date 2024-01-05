@@ -16,7 +16,8 @@ internal val appModule = module {
         DefaultSettingsComponent(
             componentContext = params.get(),
             mainContext = params.get(),
-            biometricAuthenticator = get()
+            icerockBiometricAuthenticator = get(),
+            propertyBiometricAuthenticator = get()
         )
     } bind SettingsComponent::class
 }

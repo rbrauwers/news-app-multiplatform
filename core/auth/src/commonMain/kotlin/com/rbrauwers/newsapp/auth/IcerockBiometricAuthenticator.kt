@@ -3,9 +3,8 @@ package com.rbrauwers.newsapp.auth
 import dev.icerock.moko.biometry.BiometryAuthenticator
 import dev.icerock.moko.resources.desc.Raw
 import dev.icerock.moko.resources.desc.StringDesc
-import kotlin.coroutines.CoroutineContext
 
-interface BiometricAuthenticator {
+interface IcerockBiometricAuthenticator {
 
     suspend fun authenticate(
         biometryAuthenticator: BiometryAuthenticator,
@@ -14,28 +13,19 @@ interface BiometricAuthenticator {
         errorButton: String = "Error"
     ) : BiometricStatus
 
-    sealed interface BiometricStatus {
-        data object Failure : BiometricStatus
-        data object NotRequested : BiometricStatus
-        data object NotAvailable : BiometricStatus
-        data object Success : BiometricStatus
-        class Error(val error: String?) : BiometricStatus
-    }
-
 }
 
-internal class DefaultBiometricAuthenticator(mainContext: CoroutineContext) :
-    BiometricAuthenticator {
+class DefaultIcerockBiometricAuthenticator : IcerockBiometricAuthenticator {
 
     override suspend fun authenticate(
         biometryAuthenticator: BiometryAuthenticator,
         title: String,
         subtitle: String,
         errorButton: String
-    ): BiometricAuthenticator.BiometricStatus {
+    ): BiometricStatus {
         return try {
             if (!biometryAuthenticator.isBiometricAvailable()) {
-                return BiometricAuthenticator.BiometricStatus.NotAvailable
+                return BiometricStatus.NotAvailable
             }
 
             val isSuccess = biometryAuthenticator.checkBiometryAuthentication(
@@ -44,9 +34,9 @@ internal class DefaultBiometricAuthenticator(mainContext: CoroutineContext) :
                 failureButtonText = StringDesc.Raw(errorButton)
             )
 
-            if (isSuccess) BiometricAuthenticator.BiometricStatus.Success else BiometricAuthenticator.BiometricStatus.Failure
+            if (isSuccess) BiometricStatus.Success else BiometricStatus.Failure
         } catch (e: Throwable) {
-            BiometricAuthenticator.BiometricStatus.Error(error = e.message)
+            BiometricStatus.Error(error = e.message)
         }
     }
 
