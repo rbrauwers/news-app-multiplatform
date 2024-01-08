@@ -34,6 +34,9 @@ kotlin {
                 implementation(compose.material3)
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
+
+                implementation(dependencies.platform(libs.koin.bom))
+                implementation(libs.koin.core)
             }
         }
         val commonTest by getting {

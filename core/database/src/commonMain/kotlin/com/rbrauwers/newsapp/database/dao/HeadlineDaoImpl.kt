@@ -18,7 +18,7 @@ internal class HeadlineDaoImpl(
             .mapToList(context)
     }
 
-    override suspend fun upsertHeadlines(headlines: List<ArticleEntity>) {
+    override fun upsertHeadlines(headlines: List<ArticleEntity>) {
         queries.transaction {
             headlines.forEach { item ->
                 queries.upsert(
@@ -35,8 +35,16 @@ internal class HeadlineDaoImpl(
         }
     }
 
-    override suspend fun updateLiked(id: Long, value: Boolean) {
+    override fun updateLiked(id: Long, value: Boolean) {
         queries.updateLiked(id = id, liked = if (value) 1L else 0L)
+    }
+
+    override fun updateLikes(likes: Map<Long, Boolean>) {
+        queries.transaction {
+            likes.forEach { (id, liked) ->
+                updateLiked(id = id, value = liked)
+            }
+        }
     }
 
 }

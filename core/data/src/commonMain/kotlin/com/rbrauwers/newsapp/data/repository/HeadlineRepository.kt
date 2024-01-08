@@ -11,5 +11,7 @@ interface HeadlineRepository {
 
     suspend fun updateLiked(id: Long, value: Boolean)
 
+    suspend fun updateLikes(likes: Map<Long, Boolean>)
+
 }
 
