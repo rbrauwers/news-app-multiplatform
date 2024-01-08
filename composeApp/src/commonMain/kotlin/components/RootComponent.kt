@@ -7,6 +7,7 @@ import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.value.Value
+import com.rbrauwers.newsapp.designsystem.providers.PlatformInsetProvider
 import com.rbrauwers.newsapp.headlines.HeadlinesComponent
 import com.rbrauwers.newsapp.sources.SourcesComponent
 import kotlinx.coroutines.Dispatchers
@@ -18,6 +19,7 @@ import settings.SettingsComponent
 
 interface RootComponent {
     val stack: Value<ChildStack<*, NewsAppChild>>
+    val platformInsetProvider: PlatformInsetProvider
 
     fun onNavigateBack()
     fun onNavigateToHeadlines()
@@ -38,6 +40,7 @@ internal class AppRootComponent(
 ) : RootComponent, KoinComponent, ComponentContext by componentContext {
 
     private val navigation = StackNavigation<Config>()
+    override val platformInsetProvider: PlatformInsetProvider = get()
 
     override val stack: Value<ChildStack<*, RootComponent.NewsAppChild>> =
         childStack(

@@ -57,4 +57,10 @@ class SyncedHeadlineRepository(
             dao.updateLiked(id = id, value)
         }
     }
+
+    override suspend fun updateLikes(likes: Map<Long, Boolean>) {
+        withContext(Dispatchers.IO) {
+            dao.updateLikes(likes = likes)
+        }
+    }
 }

@@ -7,8 +7,10 @@ interface HeadlineDao {
 
     fun getHeadlines(): Flow<List<ArticleEntity>>
 
-    suspend fun upsertHeadlines(headlines: List<ArticleEntity>)
+    fun upsertHeadlines(headlines: List<ArticleEntity>)
 
-    suspend fun updateLiked(id: Long, value: Boolean)
+    fun updateLiked(id: Long, value: Boolean)
+
+    fun updateLikes(likes: Map<Long, Boolean>)
 
 }
