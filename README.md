@@ -27,3 +27,4 @@ newsApiKey=YOUR_API_KEY
 - Network: [Ktor](https://ktor.io/)
 - Local storage: [SQLDelight](https://github.com/cashapp/sqldelight)
 - Build system: [Gradle Version Catalog](https://docs.gradle.org/current/userguide/platforms.html)
+- Biometry: [Icerock](https://github.com/icerockdev/moko-biometry) and property solution
