@@ -2,11 +2,13 @@
 
 Kotlin Multiplatform project targeting Android and iOS.<br>
 The app displays news and its sources.<br>
-The implementation follows [app architecture](https://developer.android.com/topic/architecture) principles, such as modularization, dependency injection, single source of truth, etc.<br><br>
+The implementation follows [app architecture](https://developer.android.com/topic/architecture) principles, such as modularization, dependency injection, single source of truth, etc.<br><be>
 
-|                                                                            Android                                                                             |                                                                           iOS                                                                           |
-|:--------------------------------------------------------------------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------:|
-| https://github.com/rbrauwers/news-app-multiplatform/assets/3301123/4d56f395-5395-4494-852b-ba82d3e0e00f | https://github.com/rbrauwers/news-app-multiplatform/assets/3301123/16a08e22-362d-460d-b592-029b98adb733 |
+## Android
+https://github.com/rbrauwers/news-app-multiplatform/assets/3301123/4d56f395-5395-4494-852b-ba82d3e0e00f
+
+## iOS
+https://github.com/rbrauwers/news-app-multiplatform/assets/3301123/16a08e22-362d-460d-b592-029b98adb733
 
 ## How it works
 Data is fetched from the [News API](https://newsapi.org/), stored locally and observed by UI.
