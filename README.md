@@ -2,11 +2,13 @@
 
 Kotlin Multiplatform project targeting Android and iOS.<br>
 The app displays news and its sources.<br>
-The implementation follows [app architecture](https://developer.android.com/topic/architecture) principles, such as modularization, dependency injection, single source of truth, etc.<br><br>
+The implementation follows [app architecture](https://developer.android.com/topic/architecture) principles, such as modularization, dependency injection, single source of truth, etc.<br><be>
 
-|                                                                            Android                                                                             |                                                                           iOS                                                                           |
-|:--------------------------------------------------------------------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------:|
-| <img src="https://github.com/rbrauwers/news-app-multiplatform/blob/main/screenshots/headlines_android.png" alt="News app multiplaform (Android)" width="300"/> | <img src="https://github.com/rbrauwers/news-app-multiplatform/blob/main/screenshots/headlines_ios.png" alt="News app multiplatform (iOS)" width="300"/> |
+## Android
+https://github.com/rbrauwers/news-app-multiplatform/assets/3301123/4d56f395-5395-4494-852b-ba82d3e0e00f
+
+## iOS
+https://github.com/rbrauwers/news-app-multiplatform/assets/3301123/16a08e22-362d-460d-b592-029b98adb733
 
 ## How it works
 Data is fetched from the [News API](https://newsapi.org/), stored locally and observed by UI.
@@ -25,3 +27,4 @@ newsApiKey=YOUR_API_KEY
 - Network: [Ktor](https://ktor.io/)
 - Local storage: [SQLDelight](https://github.com/cashapp/sqldelight)
 - Build system: [Gradle Version Catalog](https://docs.gradle.org/current/userguide/platforms.html)
+- Biometry: [Icerock](https://github.com/icerockdev/moko-biometry) and property solution
