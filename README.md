@@ -6,7 +6,7 @@ The implementation follows [app architecture](https://developer.android.com/topi
 
 |                                                                            Android                                                                             |                                                                           iOS                                                                           |
 |:--------------------------------------------------------------------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------:|
-| <img src="https://github.com/rbrauwers/news-app-multiplatform/blob/main/screenshots/headlines_android.png" alt="News app multiplaform (Android)" width="300"/> | <img src="https://github.com/rbrauwers/news-app-multiplatform/blob/main/screenshots/headlines_ios.png" alt="News app multiplatform (iOS)" width="300"/> |
+| https://github.com/rbrauwers/news-app-multiplatform/assets/3301123/4d56f395-5395-4494-852b-ba82d3e0e00f | https://github.com/rbrauwers/news-app-multiplatform/assets/3301123/16a08e22-362d-460d-b592-029b98adb733 |
 
 ## How it works
 Data is fetched from the [News API](https://newsapi.org/), stored locally and observed by UI.
