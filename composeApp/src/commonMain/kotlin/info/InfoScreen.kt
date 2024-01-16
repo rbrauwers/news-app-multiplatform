@@ -40,6 +40,7 @@ private val libs = listOf(
     Lib(name = "Koin", url = "https://insert-koin.io/"),
     Lib(name = "Ktor", url = "https://ktor.io/"),
     Lib(name = "Material", url = "https://m3.material.io/develop/android/jetpack-compose"),
+    Lib(name = "Moko Biometry", url = "https://github.com/icerockdev/moko-biometry"),
     Lib(name = "Moko Resources", url = "https://github.com/icerockdev/moko-resources"),
     Lib(name = "SQLDelight", url = "https://github.com/cashapp/sqldelight"),
 )
